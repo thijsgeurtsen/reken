@@ -1,284 +1,364 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Start – Rekenen</title>
-  <style>
-    body{
-      font-family:system-ui,sans-serif;
-      background:#f4f6ff;
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:24px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start – Rekenen</title>
 
-    .box{
-      background:#fff;
-      padding:2.2rem;
-      border-radius:1.8rem;
-      box-shadow:0 10px 30px rgba(0,0,0,.08);
-      max-width:760px;
-      width:100%;
-      text-align:center;
-    }
+<style>
 
-    h1{
-      margin:0 0 .4rem;
-      font-size:2.2rem;
-    }
+body{
+font-family:system-ui,sans-serif;
+background:#f4f6ff;
+margin:0;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:24px;
+}
 
-    .sub{
-      margin:0 0 1.4rem;
-      color:#555;
-      font-size:1.05rem;
-    }
+.box{
+background:#fff;
+padding:2.2rem;
+border-radius:1.8rem;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+max-width:760px;
+width:100%;
+text-align:center;
+}
 
-    select{
-      width:100%;
-      max-width:360px;
-      font-size:1.15rem;
-      padding:1rem 1.1rem;
-      border-radius:1.1rem;
-      border:2px solid #cfd3ff;
-      outline:none;
-      background:#fff;
-      box-sizing:border-box;
-    }
+h1{
+margin:0 0 .4rem;
+font-size:2.2rem;
+}
 
-    select:focus{
-      border-color:#4f46e5;
-      box-shadow:0 0 0 4px rgba(79,70,229,.15);
-    }
+.sub{
+margin:0 0 1.4rem;
+color:#555;
+font-size:1.05rem;
+}
 
-    .status{
-      margin-top:1rem;
-      color:#555;
-      font-size:.98rem;
-      min-height:1.4rem;
-    }
+select{
+width:100%;
+max-width:360px;
+font-size:1.15rem;
+padding:1rem 1.1rem;
+border-radius:1.1rem;
+border:2px solid #cfd3ff;
+outline:none;
+background:#fff;
+box-sizing:border-box;
+}
 
-    .section{
-      margin-top:1.5rem;
-    }
+select:focus{
+border-color:#4f46e5;
+box-shadow:0 0 0 4px rgba(79,70,229,.15);
+}
 
-    .title{
-      font-size:1.2rem;
-      font-weight:900;
-      margin-bottom:1rem;
-    }
+.status{
+margin-top:1rem;
+color:#555;
+font-size:.98rem;
+min-height:1.4rem;
+}
 
-    .students{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-      gap:.9rem;
-      margin-top:1rem;
-    }
+.section{
+margin-top:1.5rem;
+}
 
-    .student-btn{
-      border:none;
-      border-radius:1.2rem;
-      padding:1rem;
-      font-size:1.1rem;
-      font-weight:900;
-      cursor:pointer;
-      background:#eef2ff;
-      color:#1e1b4b;
-      transition:transform .08s ease, box-shadow .08s ease, background .08s ease;
-      box-shadow:0 4px 10px rgba(0,0,0,.04);
-    }
+.title{
+font-size:1.2rem;
+font-weight:900;
+margin-bottom:1rem;
+}
 
-    .student-btn:hover{
-      transform:translateY(-1px);
-      background:#e0e7ff;
-    }
+.students{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:.9rem;
+margin-top:1rem;
+}
 
-    .student-btn:active{
-      transform:translateY(0);
-    }
+.student-btn{
+border:none;
+border-radius:1.2rem;
+padding:1rem;
+font-size:1.1rem;
+font-weight:900;
+cursor:pointer;
+background:#eef2ff;
+color:#1e1b4b;
+transition:transform .08s ease;
+}
 
-    .hidden{
-      display:none;
-    }
+.student-btn:hover{
+transform:translateY(-1px);
+background:#e0e7ff;
+}
 
-    .small{
-      font-size:.9rem;
-      color:#777;
-      margin-top:.8rem;
-    }
-  </style>
+.hidden{
+display:none;
+}
+
+.small{
+font-size:.9rem;
+color:#777;
+margin-top:.8rem;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>Start</h1>
-    <p class="sub">Kies eerst je klas en daarna je naam</p>
 
-    <select id="classSelect">
-      <option value="">Kies je klas</option>
-      <option value="LianneLaura">LianneLaura</option>
-      <option value="Groep 3B">Groep 3B</option>
-      <option value="Groep 4A">Groep 4A</option>
-      <option value="Groep 4B">Groep 4B</option>
-      <option value="Groep 5A">Groep 5A</option>
-      <option value="Groep 5B">Groep 5B</option>
-      <option value="Groep 6A">Groep 6A</option>
-      <option value="Groep 6B">Groep 6B</option>
-      <option value="Groep 7A">Groep 7A</option>
-      <option value="Groep 7B">Groep 7B</option>
-      <option value="Groep 8A">Groep 8A</option>
-      <option value="Groep 8B">Groep 8B</option>
-      <option value="Extra">Extra</option>
-    </select>
+<div class="box">
 
-    <div class="status" id="statusMsg">Nog geen klas gekozen.</div>
+<h1>Start</h1>
+<p class="sub">Kies eerst je klas en daarna je naam</p>
 
-    <div class="section hidden" id="studentsSection">
-      <div class="title">Kies je naam</div>
-      <div class="students" id="studentsList"></div>
-      <div class="small" id="smallMsg"></div>
-    </div>
-  </div>
+<select id="classSelect">
+<option value="">Kies je klas</option>
+<option value="LianneLaura">LianneLaura</option>
+<option value="Groep3B">Groep 3B</option>
+<option value="Groep4A">Groep 4A</option>
+<option value="Groep4B">Groep 4B</option>
+<option value="Groep5A">Groep 5A</option>
+<option value="Groep5B">Groep 5B</option>
+<option value="Groep6A">Groep 6A</option>
+<option value="Groep6B">Groep 6B</option>
+<option value="Groep7A">Groep 7A</option>
+<option value="Groep7B">Groep 7B</option>
+<option value="Groep8A">Groep 8A</option>
+<option value="Groep8B">Groep 8B</option>
+<option value="Extra">Extra</option>
+</select>
+
+<div class="status" id="statusMsg">
+Nog geen klas gekozen.
+</div>
+
+<div class="section hidden" id="studentsSection">
+
+<div class="title">
+Kies je naam
+</div>
+
+<div class="students" id="studentsList"></div>
+
+<div class="small" id="smallMsg"></div>
+
+</div>
+
+</div>
 
 <script>
+
 /* =========================
-   A) CONFIG
+CONFIG
 ========================= */
-const SHEETS_EXEC_URL = "const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwdhE3d9kyhMwTCSOlwi8dLvTK02zLEl1zO1qwuMFOCIJzk_27E4sVCbskVrc2WyV2eOQ/exec";";
+
+const SHEETS_EXEC_URL =
+"https://script.google.com/macros/s/AKfycbwdhE3d9kyhMwTCSOlwi8dLvTK02zLEl1zO1qwuMFOCIJzk_27E4sVCbskVrc2WyV2eOQ/exec";
 
 const STORAGE_CURRENT = "rekenen_current_student_v1";
 const STORAGE_CLASS = "rekenen_current_class_v1";
 
-/* =========================
-   B) ELEMENTS
-========================= */
-const classSelect = document.getElementById("classSelect");
-const statusMsg = document.getElementById("statusMsg");
-const studentsSection = document.getElementById("studentsSection");
-const studentsList = document.getElementById("studentsList");
-const smallMsg = document.getElementById("smallMsg");
 
 /* =========================
-   C) JSONP helper
+ELEMENTS
 ========================= */
-let __jsonpSeq = 0;
+
+const classSelect =
+document.getElementById("classSelect");
+
+const statusMsg =
+document.getElementById("statusMsg");
+
+const studentsSection =
+document.getElementById("studentsSection");
+
+const studentsList =
+document.getElementById("studentsList");
+
+const smallMsg =
+document.getElementById("smallMsg");
+
+
+/* =========================
+JSONP helper
+========================= */
+
+let jsonpCounter = 0;
 
 function jsonp(url){
-  return new Promise((resolve, reject) => {
-    const cb = "__cb_" + (++__jsonpSeq) + "_" + Date.now();
-    const script = document.createElement("script");
 
-    const cleanup = () => {
-      try { delete window[cb]; } catch(e){}
-      script.remove();
-    };
+return new Promise((resolve,reject)=>{
 
-    window[cb] = (data) => {
-      cleanup();
-      resolve(data);
-    };
+const cb =
+"jsonp_cb_"+(++jsonpCounter);
 
-    script.onerror = () => {
-      cleanup();
-      reject(new Error("JSONP failed"));
-    };
+const script =
+document.createElement("script");
 
-    const sep = url.includes("?") ? "&" : "?";
-    script.src = url + sep + "callback=" + encodeURIComponent(cb);
-    document.body.appendChild(script);
-  });
+window[cb] = function(data){
+
+delete window[cb];
+script.remove();
+
+resolve(data);
+
+};
+
+script.onerror = function(){
+
+delete window[cb];
+script.remove();
+
+reject();
+
+};
+
+script.src =
+url + "&callback=" + cb;
+
+document.body.appendChild(script);
+
+});
+
 }
 
+
 /* =========================
-   D) Sheets calls
+Sheets call
 ========================= */
+
 async function sheetsListStudents(klas){
-  const url =
-    `${SHEETS_EXEC_URL}?action=listStudents`
-    + `&klas=${encodeURIComponent(klas)}`;
-  return await jsonp(url);
+
+const url =
+`${SHEETS_EXEC_URL}?action=listStudents&klas=${encodeURIComponent(klas)}`;
+
+return await jsonp(url);
+
 }
 
+
 /* =========================
-   E) UI
+UI helpers
 ========================= */
+
 function clearStudents(){
-  studentsList.innerHTML = "";
-  studentsSection.classList.add("hidden");
-  smallMsg.textContent = "";
+
+studentsList.innerHTML="";
+studentsSection.classList.add("hidden");
+smallMsg.textContent="";
+
 }
 
-function renderStudents(klas, students){
-  studentsList.innerHTML = "";
+function renderStudents(klas,students){
 
-  if(!students || !students.length){
-    clearStudents();
-    studentsSection.classList.remove("hidden");
-    smallMsg.textContent = "Er zijn nog geen leerlingen gevonden in deze klas.";
-    return;
-  }
+studentsList.innerHTML="";
 
-  students.forEach(name => {
-    const btn = document.createElement("button");
-    btn.className = "student-btn";
-    btn.type = "button";
-    btn.textContent = name;
+students.forEach(name=>{
 
-    btn.addEventListener("click", () => {
-      localStorage.setItem(STORAGE_CLASS, klas);
-      localStorage.setItem(STORAGE_CURRENT, name);
-      location.href = "menu.html";
-    });
+const btn =
+document.createElement("button");
 
-    studentsList.appendChild(btn);
-  });
+btn.className="student-btn";
+btn.textContent=name;
 
-  studentsSection.classList.remove("hidden");
-  smallMsg.textContent = `${students.length} leerling${students.length === 1 ? "" : "en"} gevonden.`;
+btn.onclick=function(){
+
+localStorage.setItem(STORAGE_CLASS,klas);
+localStorage.setItem(STORAGE_CURRENT,name);
+
+location.href="menu.html";
+
+};
+
+studentsList.appendChild(btn);
+
+});
+
+studentsSection.classList.remove("hidden");
+
+smallMsg.textContent =
+students.length+" leerlingen gevonden.";
+
 }
 
+
 /* =========================
-   F) Load students for class
+Load students
 ========================= */
-async function loadStudentsForClass(){
-  const klas = classSelect.value.trim();
 
-  clearStudents();
+async function loadStudents(){
 
-  if(!klas){
-    statusMsg.textContent = "Nog geen klas gekozen.";
-    return;
-  }
+const klas =
+classSelect.value;
 
-  statusMsg.textContent = "Namen laden…";
+clearStudents();
 
-  try{
-    const res = await sheetsListStudents(klas);
+if(!klas){
 
-    if(res && res.ok === true && Array.isArray(res.students)){
-      statusMsg.textContent = `Klas geladen: ${klas} ✅`;
-      renderStudents(klas, res.students);
-      return;
-    }
+statusMsg.textContent =
+"Nog geen klas gekozen.";
 
-    throw new Error("Unexpected response");
-  }catch(err){
-    statusMsg.textContent = "Laden mislukt. Controleer Sheets of Apps Script.";
-    clearStudents();
-  }
+return;
+
 }
 
-/* =========================
-   G) Events
-========================= */
-classSelect.addEventListener("change", loadStudentsForClass);
+statusMsg.textContent =
+"Namen laden…";
+
+try{
+
+const res =
+await sheetsListStudents(klas);
+
+if(res.ok){
+
+statusMsg.textContent =
+"Klas geladen: "+klas+" ✅";
+
+renderStudents(klas,res.students);
+
+}else{
+
+statusMsg.textContent =
+"Geen leerlingen gevonden.";
+
+}
+
+}catch(err){
+
+statusMsg.textContent =
+"Fout bij laden.";
+
+}
+
+}
+
 
 /* =========================
-   H) Init
+Events
 ========================= */
-localStorage.removeItem(STORAGE_CURRENT);
+
+classSelect.addEventListener(
+"change",
+loadStudents
+);
+
+
+/* =========================
+Init
+========================= */
+
+localStorage.removeItem(
+STORAGE_CURRENT
+);
+
 </script>
+
 </body>
 </html>
