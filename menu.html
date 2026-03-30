@@ -193,16 +193,18 @@ const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwdhE3d9kyhMwTC
 const TEACHER_PIN = "1234";
 
 /* =========================
-   B) HUIDIGE LEERLING + KLAS
+   B) HUIDIGE LEERLING + KLAS + CODE
 ========================= */
 const STORAGE_CURRENT = "rekenen_current_student_v1";
 const STORAGE_CLASS = "rekenen_current_class_v1";
-const STORAGE_DATA_PREFIX = "rekenen_data_v2_";
+const STORAGE_CODE = "rekenen_current_code_v1";
+const STORAGE_DATA_PREFIX = "rekenen_data_v3_";
 
 const studentId = (localStorage.getItem(STORAGE_CURRENT) || "").trim();
 const studentClass = (localStorage.getItem(STORAGE_CLASS) || "").trim();
+const studentCode = (localStorage.getItem(STORAGE_CODE) || "").trim();
 
-if (!studentId || !studentClass) {
+if (!studentId || !studentClass || !studentCode) {
   location.href = "index.html";
 }
 
@@ -224,6 +226,7 @@ function getLocalData() {
         v: 1,
         id: studentId,
         klas: studentClass,
+        code: studentCode,
         levels: { plus: 0, min: 0, keer: 0, deel: 0 }
       };
 }
@@ -263,19 +266,21 @@ function jsonp(url) {
   });
 }
 
-async function sheetsGet(klas, leerling) {
+async function sheetsGet(klas, naam, code) {
   const url =
     `${SHEETS_EXEC_URL}?action=get`
     + `&klas=${encodeURIComponent(klas)}`
-    + `&leerling=${encodeURIComponent(leerling)}`;
+    + `&naam=${encodeURIComponent(naam)}`
+    + `&code=${encodeURIComponent(code)}`;
   return await jsonp(url);
 }
 
-async function sheetsSet(klas, leerling, levels) {
+async function sheetsSet(klas, naam, code, levels) {
   const url =
     `${SHEETS_EXEC_URL}?action=set`
     + `&klas=${encodeURIComponent(klas)}`
-    + `&leerling=${encodeURIComponent(leerling)}`
+    + `&naam=${encodeURIComponent(naam)}`
+    + `&code=${encodeURIComponent(code)}`
     + `&plus=${encodeURIComponent(levels.plus)}`
     + `&min=${encodeURIComponent(levels.min)}`
     + `&keer=${encodeURIComponent(levels.keer)}`
@@ -343,7 +348,7 @@ async function loadFromSheets() {
   status.textContent = "Sheets: laden…";
 
   try {
-    const res = await sheetsGet(studentClass, studentId);
+    const res = await sheetsGet(studentClass, studentId, studentCode);
 
     if (res && res.ok === true && res.levels) {
       levels = {
@@ -395,7 +400,7 @@ document.getElementById("resetSheetsBtn").addEventListener("click", async () => 
 
   try {
     const newLevels = { plus: 0, min: 0, keer: 0, deel: 0 };
-    await sheetsSet(studentClass, studentId, newLevels);
+    await sheetsSet(studentClass, studentId, studentCode, newLevels);
 
     const local = getLocalData();
     local.levels = newLevels;
