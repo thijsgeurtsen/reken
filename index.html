@@ -1,65 +1,217 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<title>Menu</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Start – Rekenen</title>
+  <style>
+    body{
+      font-family:system-ui,sans-serif;
+      background:#f4f6ff;
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:24px;
+    }
 
-<style>
-body{
-  font-family:system-ui;
-  background:#f4f6ff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+    .box{
+      background:#fff;
+      padding:2.2rem;
+      border-radius:1.8rem;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+      max-width:560px;
+      width:100%;
+      text-align:center;
+    }
 
-.box{
-  background:#fff;
-  padding:2rem;
-  border-radius:1.5rem;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
-  width:100%;
-  max-width:600px;
-}
+    h1{
+      margin:0 0 .4rem;
+      font-size:2.2rem;
+    }
 
-h1{text-align:center}
+    .sub{
+      margin:0 0 1.4rem;
+      color:#555;
+      font-size:1.05rem;
+    }
 
-.grid{
-  display:grid;
-  gap:1rem;
-  margin-top:1rem;
-}
+    select,input{
+      width:100%;
+      font-size:1.1rem;
+      padding:1rem 1.1rem;
+      border-radius:1.1rem;
+      border:2px solid #cfd3ff;
+      outline:none;
+      background:#fff;
+      box-sizing:border-box;
+      margin-bottom:.9rem;
+    }
 
-.btn{
-  padding:1rem;
-  border-radius:1rem;
-  background:#4f46e5;
-  color:white;
-  text-align:center;
-  text-decoration:none;
-  font-weight:900;
-}
-</style>
+    select:focus,input:focus{
+      border-color:#4f46e5;
+      box-shadow:0 0 0 4px rgba(79,70,229,.15);
+    }
+
+    button{
+      margin-top:.4rem;
+      padding:1rem 1.4rem;
+      border:none;
+      border-radius:999px;
+      background:#4f46e5;
+      color:#fff;
+      font-weight:900;
+      font-size:1rem;
+      cursor:pointer;
+      min-width:160px;
+    }
+
+    button:disabled{
+      background:#b9b9c7;
+      cursor:default;
+    }
+
+    .status{
+      margin-top:.9rem;
+      color:#555;
+      font-size:.95rem;
+      min-height:1.4rem;
+    }
+  </style>
 </head>
-
 <body>
-<div class="box">
-  <h1 id="title"></h1>
+  <div class="box">
+    <h1>Start</h1>
+    <p class="sub">Kies je klas en log in met je naam en code</p>
 
-  <div class="grid">
-    <a class="btn" href="plus.html">Optellen</a>
-    <a class="btn" href="min.html">Aftrekken</a>
-    <a class="btn" href="keer.html">Keer</a>
-    <a class="btn" href="deel.html">Delen</a>
+    <select id="classSelect">
+      <option value="">Kies je klas</option>
+      <option value="LianneLaura">LianneLaura</option>
+      <option value="Groep 3B">Groep 3B</option>
+      <option value="Groep 4A">Groep 4A</option>
+      <option value="Groep 4B">Groep 4B</option>
+      <option value="Groep 5A">Groep 5A</option>
+      <option value="Groep 5B">Groep 5B</option>
+      <option value="Groep 6A">Groep 6A</option>
+      <option value="Groep 6B">Groep 6B</option>
+      <option value="Groep 7A">Groep 7A</option>
+      <option value="Groep 7B">Groep 7B</option>
+      <option value="Groep 8A">Groep 8A</option>
+      <option value="Groep 8B">Groep 8B</option>
+      <option value="Extra">Extra</option>
+    </select>
+
+    <input id="studentName" type="text" placeholder="Jouw naam" autocomplete="off" />
+    <input id="studentCode" type="password" placeholder="Jouw code" inputmode="numeric" />
+
+    <button id="loginBtn" type="button">Inloggen</button>
+
+    <div class="status" id="statusMsg">Nog niet ingelogd.</div>
   </div>
-</div>
 
 <script>
-const name = localStorage.getItem("rekenen_name");
-if(!name) location.href = "index.html";
+/* =========================
+   A) CONFIG
+========================= */
+const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbxUB7x8Koehwj4Yj7_HM35Ei1VAHk11jXAnIatOEOlOXd7DugEbRU3iMLb4MXODIIS1Yw/exec";
 
-document.getElementById("title").textContent = "Welkom " + name;
+const STORAGE_CURRENT = "rekenen_current_student_v1";
+const STORAGE_CLASS = "rekenen_current_class_v1";
+const STORAGE_CODE = "rekenen_current_code_v1";
+
+/* =========================
+   B) ELEMENTS
+========================= */
+const classSelect = document.getElementById("classSelect");
+const studentName = document.getElementById("studentName");
+const studentCode = document.getElementById("studentCode");
+const loginBtn = document.getElementById("loginBtn");
+const statusMsg = document.getElementById("statusMsg");
+
+/* =========================
+   C) JSONP helper
+========================= */
+let __jsonpSeq = 0;
+
+function jsonp(url){
+  return new Promise((resolve, reject) => {
+    const cb = "__cb_" + (++__jsonpSeq) + "_" + Date.now();
+    const script = document.createElement("script");
+
+    const cleanup = () => {
+      try { delete window[cb]; } catch(e) {}
+      script.remove();
+    };
+
+    window[cb] = (data) => {
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("JSONP failed"));
+    };
+
+    const sep = url.includes("?") ? "&" : "?";
+    script.src = url + sep + "callback=" + encodeURIComponent(cb);
+    document.body.appendChild(script);
+  });
+}
+
+/* =========================
+   D) LOGIN
+========================= */
+async function loginStudent(klas, naam, code){
+  const url =
+    `${SHEETS_EXEC_URL}?action=login`
+    + `&klas=${encodeURIComponent(klas)}`
+    + `&naam=${encodeURIComponent(naam)}`
+    + `&code=${encodeURIComponent(code)}`;
+
+  return await jsonp(url);
+}
+
+async function login(){
+  const klas = classSelect.value.trim();
+  const naam = studentName.value.trim();
+  const code = studentCode.value.trim();
+
+  if(!klas || !naam || !code){
+    statusMsg.textContent = "Vul klas, naam en code in.";
+    return;
+  }
+
+  loginBtn.disabled = true;
+  statusMsg.textContent = "Inloggen…";
+
+  try{
+    const res = await loginStudent(klas, naam, code);
+
+    if(res && res.ok === true){
+      localStorage.setItem(STORAGE_CLASS, klas);
+      localStorage.setItem(STORAGE_CURRENT, naam);
+      localStorage.setItem(STORAGE_CODE, code);
+
+      statusMsg.textContent = "Inloggen gelukt ✅";
+      location.href = "menu.html";
+      return;
+    }
+
+    statusMsg.textContent = "Naam of code klopt niet.";
+  }catch(e){
+    statusMsg.textContent = "Naam of code klopt niet.";
+  }finally{
+    loginBtn.disabled = false;
+  }
+}
+
+loginBtn.addEventListener("click", login);
+
+studentCode.addEventListener("keydown", (e) => {
+  if(e.key === "Enter") login();
+});
 </script>
 </body>
 </html>
