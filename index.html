@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Start – Rekenen</title>
   <style>
     body{
@@ -20,83 +20,55 @@
       padding:2.2rem;
       border-radius:1.8rem;
       box-shadow:0 10px 30px rgba(0,0,0,.08);
-      max-width:760px;
+      max-width:560px;
       width:100%;
       text-align:center;
     }
-    h1{
-      margin:0 0 .4rem;
-      font-size:2.2rem;
-    }
-    .sub{
-      margin:0 0 1.4rem;
-      color:#555;
-      font-size:1.05rem;
-    }
-    select{
+    h1{margin:0 0 .4rem;font-size:2.2rem;}
+    .sub{margin:0 0 1.4rem;color:#555;font-size:1.05rem;}
+    select,input{
       width:100%;
-      max-width:360px;
-      font-size:1.15rem;
+      font-size:1.1rem;
       padding:1rem 1.1rem;
       border-radius:1.1rem;
       border:2px solid #cfd3ff;
       outline:none;
       background:#fff;
       box-sizing:border-box;
+      margin-bottom:.9rem;
     }
-    select:focus{
+    select:focus,input:focus{
       border-color:#4f46e5;
       box-shadow:0 0 0 4px rgba(79,70,229,.15);
     }
     .status{
-      margin-top:1rem;
+      margin-top:.8rem;
       color:#555;
-      font-size:.98rem;
+      font-size:.95rem;
       min-height:1.4rem;
     }
-    .section{
-      margin-top:1.5rem;
-    }
-    .title{
-      font-size:1.2rem;
-      font-weight:900;
-      margin-bottom:1rem;
-    }
-    .students{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-      gap:.9rem;
-      margin-top:1rem;
-    }
-    .student-btn{
+    button{
+      margin-top:.6rem;
+      padding:1rem 1.4rem;
       border:none;
-      border-radius:1.2rem;
-      padding:1rem;
-      font-size:1.1rem;
+      border-radius:999px;
+      background:#4f46e5;
+      color:#fff;
       font-weight:900;
+      font-size:1rem;
       cursor:pointer;
-      background:#eef2ff;
-      color:#1e1b4b;
-      transition:transform .08s ease, background .08s ease;
+      min-width:160px;
     }
-    .student-btn:hover{
-      transform:translateY(-1px);
-      background:#e0e7ff;
-    }
-    .hidden{
-      display:none;
-    }
-    .small{
-      font-size:.9rem;
-      color:#777;
-      margin-top:.8rem;
+    button:disabled{
+      background:#b9b9c7;
+      cursor:default;
     }
   </style>
 </head>
 <body>
   <div class="box">
     <h1>Start</h1>
-    <p class="sub">Kies eerst je klas en daarna je naam</p>
+    <p class="sub">Kies je klas en log in met je naam en code</p>
 
     <select id="classSelect">
       <option value="">Kies je klas</option>
@@ -115,135 +87,100 @@
       <option value="Extra">Extra</option>
     </select>
 
-    <div class="status" id="statusMsg">Nog geen klas gekozen.</div>
+    <input id="studentName" type="text" placeholder="Jouw naam" autocomplete="off" />
+    <input id="studentCode" type="password" placeholder="Jouw code" inputmode="numeric" />
 
-    <div class="section hidden" id="studentsSection">
-      <div class="title">Kies je naam</div>
-      <div class="students" id="studentsList"></div>
-      <div class="small" id="smallMsg"></div>
-    </div>
+    <button id="loginBtn" type="button">Inloggen</button>
+
+    <div class="status" id="statusMsg">Nog niet ingelogd.</div>
   </div>
 
-  <script>
-    const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwdhE3d9kyhMwTCSOlwi8dLvTK02zLEl1zO1qwuMFOCIJzk_27E4sVCbskVrc2WyV2eOQ/exec";
-    const STORAGE_CURRENT = "rekenen_current_student_v1";
-    const STORAGE_CLASS = "rekenen_current_class_v1";
+<script>
+const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwdhE3d9kyhMwTCSOlwi8dLvTK02zLEl1zO1qwuMFOCIJzk_27E4sVCbskVrc2WyV2eOQ/exec";
 
-    const classSelect = document.getElementById("classSelect");
-    const statusMsg = document.getElementById("statusMsg");
-    const studentsSection = document.getElementById("studentsSection");
-    const studentsList = document.getElementById("studentsList");
-    const smallMsg = document.getElementById("smallMsg");
+const STORAGE_CLASS = "rekenen_current_class_v1";
+const STORAGE_CURRENT = "rekenen_current_student_v1";
+const STORAGE_CODE = "rekenen_current_code_v1";
 
-    let jsonpCounter = 0;
+const classSelect = document.getElementById("classSelect");
+const studentName = document.getElementById("studentName");
+const studentCode = document.getElementById("studentCode");
+const loginBtn = document.getElementById("loginBtn");
+const statusMsg = document.getElementById("statusMsg");
 
-    function jsonp(url) {
-      return new Promise((resolve, reject) => {
-        const cb = "jsonp_cb_" + (++jsonpCounter) + "_" + Date.now();
-        const script = document.createElement("script");
+let __jsonpSeq = 0;
 
-        window[cb] = function(data) {
-          try { delete window[cb]; } catch(e) {}
-          script.remove();
-          resolve(data);
-        };
+function jsonp(url){
+  return new Promise((resolve, reject) => {
+    const cb = "__cb_" + (++__jsonpSeq) + "_" + Date.now();
+    const script = document.createElement("script");
 
-        script.onerror = function() {
-          try { delete window[cb]; } catch(e) {}
-          script.remove();
-          reject(new Error("JSONP failed"));
-        };
+    const cleanup = () => {
+      try { delete window[cb]; } catch(e) {}
+      script.remove();
+    };
 
-        script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + encodeURIComponent(cb);
-        document.body.appendChild(script);
-      });
+    window[cb] = (data) => {
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("JSONP failed"));
+    };
+
+    const sep = url.includes("?") ? "&" : "?";
+    script.src = url + sep + "callback=" + encodeURIComponent(cb);
+    document.body.appendChild(script);
+  });
+}
+
+async function loginStudent(klas, naam, code){
+  const url =
+    `${SHEETS_EXEC_URL}?action=login`
+    + `&klas=${encodeURIComponent(klas)}`
+    + `&naam=${encodeURIComponent(naam)}`
+    + `&code=${encodeURIComponent(code)}`;
+  return await jsonp(url);
+}
+
+loginBtn.addEventListener("click", async () => {
+  const klas = classSelect.value.trim();
+  const naam = studentName.value.trim();
+  const code = studentCode.value.trim();
+
+  if (!klas || !naam || !code) {
+    statusMsg.textContent = "Vul klas, naam en code in.";
+    return;
+  }
+
+  loginBtn.disabled = true;
+  statusMsg.textContent = "Inloggen…";
+
+  try {
+    const res = await loginStudent(klas, naam, code);
+
+    if (res && res.ok) {
+      localStorage.setItem(STORAGE_CLASS, klas);
+      localStorage.setItem(STORAGE_CURRENT, naam);
+      localStorage.setItem(STORAGE_CODE, code);
+      statusMsg.textContent = "Inloggen gelukt ✅";
+      location.href = "menu.html";
+      return;
     }
 
-    async function sheetsListStudents(klas) {
-      const url = `${SHEETS_EXEC_URL}?action=listStudents&klas=${encodeURIComponent(klas)}`;
-      return await jsonp(url);
-    }
+    statusMsg.textContent = "Naam of code klopt niet.";
+  } catch (e) {
+    statusMsg.textContent = "Naam of code klopt niet.";
+  } finally {
+    loginBtn.disabled = false;
+  }
+});
 
-    function clearStudents() {
-      studentsList.innerHTML = "";
-      studentsSection.classList.add("hidden");
-      smallMsg.textContent = "";
-    }
-
-    function renderStudents(klas, students) {
-      studentsList.innerHTML = "";
-
-      if (!students || students.length === 0) {
-        studentsSection.classList.remove("hidden");
-        smallMsg.textContent = "Er zijn nog geen leerlingen gevonden in deze klas.";
-        return;
-      }
-
-      students.forEach(name => {
-        const btn = document.createElement("button");
-        btn.className = "student-btn";
-        btn.type = "button";
-        btn.textContent = name;
-
-        btn.addEventListener("click", () => {
-          localStorage.setItem(STORAGE_CLASS, klas);
-          localStorage.setItem(STORAGE_CURRENT, name);
-          location.href = "menu.html";
-        });
-
-        studentsList.appendChild(btn);
-      });
-
-      studentsSection.classList.remove("hidden");
-      smallMsg.textContent = `${students.length} leerling${students.length === 1 ? "" : "en"} gevonden.`;
-    }
-
-    function getSelectedClass() {
-      return (classSelect.options[classSelect.selectedIndex]?.value || classSelect.value || "").trim();
-    }
-
-    async function loadStudents() {
-      const klas = getSelectedClass();
-      console.log("Gekozen klas:", klas, "selectedIndex:", classSelect.selectedIndex, "raw value:", classSelect.value);
-
-      clearStudents();
-
-      if (!klas) {
-        statusMsg.textContent = "Nog geen klas gekozen.";
-        return;
-      }
-
-      statusMsg.textContent = "Namen laden…";
-
-      try {
-        const res = await sheetsListStudents(klas);
-        console.log("Sheets response:", res);
-
-        if (res && res.ok === true && Array.isArray(res.students)) {
-          statusMsg.textContent = `Klas geladen: ${klas} ✅`;
-          renderStudents(klas, res.students);
-          return;
-        }
-
-        statusMsg.textContent = "Er kwam geen goede reactie terug.";
-      } catch (err) {
-        console.error(err);
-        statusMsg.textContent = "Laden mislukt. Controleer Sheets of Apps Script.";
-      }
-    }
-
-    classSelect.addEventListener("change", loadStudents);
-    classSelect.addEventListener("input", loadStudents);
-
-    localStorage.removeItem(STORAGE_CURRENT);
-
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        if (getSelectedClass()) {
-          loadStudents();
-        }
-      }, 50);
-    });
-  </script>
+studentCode.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") loginBtn.click();
+});
+</script>
 </body>
 </html>
