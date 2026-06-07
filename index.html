@@ -80,6 +80,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="box">
     <h1>Start</h1>
@@ -102,7 +103,10 @@
       <option value="Extra">Extra</option>
     </select>
 
-    <input id="studentName" type="text" placeholder="Jouw naam" autocomplete="off" />
+    <select id="studentName" disabled>
+      <option value="">Kies eerst je klas</option>
+    </select>
+
     <input id="studentCode" type="password" placeholder="Jouw code" inputmode="numeric" />
 
     <button id="loginBtn" type="button">Inloggen</button>
@@ -111,27 +115,18 @@
   </div>
 
 <script>
-/* =========================
-   A) CONFIG
-========================= */
 const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbxUB7x8Koehwj4Yj7_HM35Ei1VAHk11jXAnIatOEOlOXd7DugEbRU3iMLb4MXODIIS1Yw/exec";
 
 const STORAGE_CURRENT = "rekenen_current_student_v1";
 const STORAGE_CLASS = "rekenen_current_class_v1";
 const STORAGE_CODE = "rekenen_current_code_v1";
 
-/* =========================
-   B) ELEMENTS
-========================= */
 const classSelect = document.getElementById("classSelect");
 const studentName = document.getElementById("studentName");
 const studentCode = document.getElementById("studentCode");
 const loginBtn = document.getElementById("loginBtn");
 const statusMsg = document.getElementById("statusMsg");
 
-/* =========================
-   C) JSONP helper
-========================= */
 let __jsonpSeq = 0;
 
 function jsonp(url){
@@ -160,9 +155,61 @@ function jsonp(url){
   });
 }
 
-/* =========================
-   D) LOGIN
-========================= */
+async function laadNamen(klas){
+  studentName.disabled = true;
+  studentName.innerHTML = '<option value="">Namen laden...</option>';
+  studentCode.value = "";
+  statusMsg.textContent = "Namen laden...";
+
+  const url =
+    `${SHEETS_EXEC_URL}?action=students`
+    + `&klas=${encodeURIComponent(klas)}`;
+
+  try{
+    const res = await jsonp(url);
+
+    studentName.innerHTML = '<option value="">Kies je naam</option>';
+
+    if(!res || res.ok !== true || !Array.isArray(res.students)){
+      studentName.innerHTML = '<option value="">Geen namen gevonden</option>';
+      statusMsg.textContent = "Geen namen gevonden.";
+      return;
+    }
+
+    res.students.forEach(leerling => {
+      const naam = typeof leerling === "string" ? leerling : leerling.naam;
+
+      if(!naam) return;
+
+      const option = document.createElement("option");
+      option.value = naam;
+      option.textContent = naam;
+      studentName.appendChild(option);
+    });
+
+    studentName.disabled = false;
+    statusMsg.textContent = "Kies je naam en vul je code in.";
+
+  }catch(e){
+    studentName.innerHTML = '<option value="">Namen laden mislukt</option>';
+    statusMsg.textContent = "Namen laden mislukt.";
+  }
+}
+
+classSelect.addEventListener("change", () => {
+  const klas = classSelect.value.trim();
+
+  studentName.disabled = true;
+  studentName.innerHTML = '<option value="">Kies eerst je klas</option>';
+  studentCode.value = "";
+
+  if(klas){
+    laadNamen(klas);
+  }else{
+    statusMsg.textContent = "Nog niet ingelogd.";
+  }
+});
+
 async function loginStudent(klas, naam, code){
   const url =
     `${SHEETS_EXEC_URL}?action=login`
