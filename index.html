@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Start – Rekenen</title>
+
   <style>
     body{
       font-family:system-ui,sans-serif;
@@ -37,7 +38,8 @@
       font-size:1.05rem;
     }
 
-    select,input{
+    select,
+    input{
       width:100%;
       font-size:1.1rem;
       padding:1rem 1.1rem;
@@ -49,7 +51,8 @@
       margin-bottom:.9rem;
     }
 
-    select:focus,input:focus{
+    select:focus,
+    input:focus{
       border-color:#4f46e5;
       box-shadow:0 0 0 4px rgba(79,70,229,.15);
     }
@@ -82,183 +85,735 @@
 </head>
 
 <body>
+
   <div class="box">
+
     <h1>Start</h1>
-    <p class="sub">Kies je klas en log in met je naam en code</p>
+
+    <p class="sub">
+      Kies je klas en log in met je naam en code
+    </p>
+
 
     <select id="classSelect">
-      <option value="">Kies je klas</option>
-      <option value="LianneLaura">LianneLaura</option>
-      <option value="MetteJur">MetteJur</option>
-      <option value="Jochem">Jochem</option>
-      <option value="JaraMette">JaraMette</option>
-      <option value="NatashaAnoek">NatashaAnoek</option>
-      <option value="SanneSander">SanneSander</option>
-      <option value="AnoekThijs">AnoekThijs</option>
-      <option value="Adne">Adne</option>
-      <option value="Stefan">Stefan</option>
-      <option value="KarinMirjam">KarinMirjam</option>
-      <option value="FionaMieke">FionaMieke</option>
-      <option value="Mike">Mike</option>
-      <option value="SandraJoris">SandraJoris</option>
+
+      <option value="">
+        Kies je klas
+      </option>
+
+      <option value="LianneLaura">
+        LianneLaura
+      </option>
+
+      <option value="MetteJur">
+        MetteJur
+      </option>
+
+      <option value="Jochem">
+        Jochem
+      </option>
+
+      <option value="JaraMette">
+        JaraMette
+      </option>
+
+      <option value="NatashaAnoek">
+        NatashaAnoek
+      </option>
+
+      <option value="SanneSander">
+        SanneSander
+      </option>
+
+      <option value="AnoekThijs">
+        AnoekThijs
+      </option>
+
+      <option value="Adne">
+        Adne
+      </option>
+
+      <option value="Stefan">
+        Stefan
+      </option>
+
+      <option value="KarinMirjam">
+        KarinMirjam
+      </option>
+
+      <option value="FionaMieke">
+        FionaMieke
+      </option>
+
+      <option value="Mike">
+        Mike
+      </option>
+
+      <option value="SandraJoris">
+        SandraJoris
+      </option>
+
     </select>
 
-    <select id="studentName" disabled>
-      <option value="">Kies eerst je klas</option>
+
+    <select
+      id="studentName"
+      disabled
+    >
+
+      <option value="">
+        Kies eerst je klas
+      </option>
+
     </select>
 
-    <input id="studentCode" type="password" placeholder="Jouw code" inputmode="numeric" />
 
-    <button id="loginBtn" type="button">Inloggen</button>
+    <input
+      id="studentCode"
+      type="password"
+      placeholder="Jouw code"
+      autocomplete="current-password"
+      autocapitalize="none"
+      spellcheck="false"
+    />
 
-    <div class="status" id="statusMsg">Nog niet ingelogd.</div>
+
+    <button
+      id="loginBtn"
+      type="button"
+    >
+      Inloggen
+    </button>
+
+
+    <div
+      class="status"
+      id="statusMsg"
+    >
+      Nog niet ingelogd.
+    </div>
+
   </div>
 
+
 <script>
-const SHEETS_EXEC_URL = "https://script.google.com/macros/s/AKfycbwDqfW2yLkL2dX_ucTkz3ZxlHIsOAoZXocJCwpiJGZks77KqoxdvDK2BS6ox9GeCgGpEQ/exec";
 
-const STORAGE_CURRENT = "rekenen_current_student_v1";
-const STORAGE_CLASS = "rekenen_current_class_v1";
-const STORAGE_CODE = "rekenen_current_code_v1";
+/* =========================================================
+   A) GOOGLE APPS SCRIPT
+========================================================= */
 
-const classSelect = document.getElementById("classSelect");
-const studentName = document.getElementById("studentName");
-const studentCode = document.getElementById("studentCode");
-const loginBtn = document.getElementById("loginBtn");
-const statusMsg = document.getElementById("statusMsg");
+const SHEETS_EXEC_URL =
+  "https://script.google.com/macros/s/AKfycbwDqfW2yLkL2dX_ucTkz3ZxlHIsOAoZXocJCwpiJGZks77KqoxdvDK2BS6ox9GeCgGpEQ/exec";
+
+
+/* =========================================================
+   B) LOCAL STORAGE
+========================================================= */
+
+const STORAGE_CURRENT =
+  "rekenen_current_student_v1";
+
+const STORAGE_CLASS =
+  "rekenen_current_class_v1";
+
+const STORAGE_CODE =
+  "rekenen_current_code_v1";
+
+
+/* =========================================================
+   C) SCHERMELEMENTEN
+========================================================= */
+
+const classSelect =
+  document.getElementById("classSelect");
+
+const studentName =
+  document.getElementById("studentName");
+
+const studentCode =
+  document.getElementById("studentCode");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const statusMsg =
+  document.getElementById("statusMsg");
+
+
+/* =========================================================
+   D) JSONP
+========================================================= */
 
 let __jsonpSeq = 0;
 
-function jsonp(url){
+
+/*
+  Na 8 seconden stoppen we met wachten.
+
+  Dat voorkomt dat de pagina eindeloos op
+  "Namen laden..." blijft staan.
+*/
+function jsonp(url, timeoutMs = 8000) {
+
   return new Promise((resolve, reject) => {
-    const cb = "__cb_" + (++__jsonpSeq) + "_" + Date.now();
-    const script = document.createElement("script");
+
+    const cb =
+      "__cb_"
+      + (++__jsonpSeq)
+      + "_"
+      + Date.now();
+
+
+    const script =
+      document.createElement("script");
+
+
+    let finished = false;
+
 
     const cleanup = () => {
-      try { delete window[cb]; } catch(e) {}
-      script.remove();
+
+      if (finished) {
+        return;
+      }
+
+      finished = true;
+
+
+      clearTimeout(timeout);
+
+
+      try {
+        delete window[cb];
+      } catch(e) {}
+
+
+      if (script.parentNode) {
+        script.remove();
+      }
+
     };
+
 
     window[cb] = (data) => {
+
+      if (finished) {
+        return;
+      }
+
+
       cleanup();
+
       resolve(data);
+
     };
+
 
     script.onerror = () => {
+
+      if (finished) {
+        return;
+      }
+
+
       cleanup();
-      reject(new Error("JSONP failed"));
+
+      reject(
+        new Error("Verbinding mislukt")
+      );
+
     };
 
-    const sep = url.includes("?") ? "&" : "?";
-    script.src = url + sep + "callback=" + encodeURIComponent(cb);
+
+    const timeout =
+      setTimeout(() => {
+
+        if (finished) {
+          return;
+        }
+
+
+        cleanup();
+
+        reject(
+          new Error("Timeout")
+        );
+
+      }, timeoutMs);
+
+
+    const sep =
+      url.includes("?")
+        ? "&"
+        : "?";
+
+
+    /*
+      Tijdstempel voorkomt ongewenste browser-cache.
+    */
+    script.src =
+      url
+      + sep
+      + "callback="
+      + encodeURIComponent(cb)
+      + "&_="
+      + Date.now();
+
+
     document.body.appendChild(script);
+
   });
+
 }
 
-async function laadNamen(klas){
-  studentName.disabled = true;
-  studentName.innerHTML = '<option value="">Namen laden...</option>';
-  studentCode.value = "";
-  statusMsg.textContent = "Namen laden...";
+
+/* =========================================================
+   E) AUTOMATISCH OPNIEUW PROBEREN
+========================================================= */
+
+async function jsonpMetRetry(url) {
+
+  try {
+
+    /*
+      Eerste poging.
+    */
+    return await jsonp(
+      url,
+      8000
+    );
+
+
+  } catch (eersteFout) {
+
+    /*
+      Google kan soms even wakker moeten worden.
+
+      Kleine pauze en daarna automatisch
+      nog één poging.
+    */
+
+    await new Promise(
+      resolve =>
+        setTimeout(resolve, 600)
+    );
+
+
+    return await jsonp(
+      url,
+      10000
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   F) NAMEN LADEN
+========================================================= */
+
+/*
+  Hiermee voorkomen we dat een oude aanvraag
+  later een nieuw gekozen klas overschrijft.
+*/
+let naamLaadNummer = 0;
+
+
+async function laadNamen(klas) {
+
+  const mijnLaadNummer =
+    ++naamLaadNummer;
+
+
+  studentName.disabled =
+    true;
+
+
+  studentName.innerHTML =
+    '<option value="">Namen laden...</option>';
+
+
+  studentCode.value =
+    "";
+
+
+  statusMsg.textContent =
+    "Namen laden…";
+
 
   const url =
     `${SHEETS_EXEC_URL}?action=students`
     + `&klas=${encodeURIComponent(klas)}`;
 
-  try{
-    const res = await jsonp(url);
 
-    studentName.innerHTML = '<option value="">Kies je naam</option>';
+  try {
 
-    if(!res || res.ok !== true || !Array.isArray(res.students)){
-      studentName.innerHTML = '<option value="">Geen namen gevonden</option>';
-      statusMsg.textContent = "Geen namen gevonden.";
+    const res =
+      await jsonpMetRetry(url);
+
+
+    /*
+      Heeft de leerling ondertussen een andere
+      klas gekozen?
+
+      Dan negeren we deze oude reactie.
+    */
+    if (
+      mijnLaadNummer !== naamLaadNummer
+    ) {
       return;
     }
 
-    res.students.forEach(leerling => {
-      const naam = typeof leerling === "string" ? leerling : leerling.naam;
 
-      if(!naam) return;
+    if (
+      classSelect.value.trim() !== klas
+    ) {
+      return;
+    }
 
-      const option = document.createElement("option");
-      option.value = naam;
-      option.textContent = naam;
-      studentName.appendChild(option);
-    });
 
-    studentName.disabled = false;
-    statusMsg.textContent = "Kies je naam en vul je code in.";
+    studentName.innerHTML =
+      '<option value="">Kies je naam</option>';
 
-  }catch(e){
-    studentName.innerHTML = '<option value="">Namen laden mislukt</option>';
-    statusMsg.textContent = "Namen laden mislukt.";
+
+    if (
+      !res
+      ||
+      res.ok !== true
+      ||
+      !Array.isArray(res.students)
+    ) {
+
+      studentName.innerHTML =
+        '<option value="">Geen namen gevonden</option>';
+
+
+      statusMsg.textContent =
+        "Geen namen gevonden.";
+
+
+      return;
+    }
+
+
+    /*
+      Namen toevoegen.
+    */
+    res.students.forEach(
+      leerling => {
+
+        const naam =
+          typeof leerling === "string"
+            ? leerling
+            : leerling.naam;
+
+
+        if (!naam) {
+          return;
+        }
+
+
+        const option =
+          document.createElement("option");
+
+
+        option.value =
+          naam;
+
+
+        option.textContent =
+          naam;
+
+
+        studentName.appendChild(
+          option
+        );
+
+      }
+    );
+
+
+    studentName.disabled =
+      false;
+
+
+    statusMsg.textContent =
+      `${res.students.length} leerlingen geladen. Kies je naam en vul je code in.`;
+
+
+  } catch(e) {
+
+    /*
+      Alleen fout tonen als deze aanvraag
+      nog steeds bij de gekozen klas hoort.
+    */
+    if (
+      mijnLaadNummer !== naamLaadNummer
+    ) {
+      return;
+    }
+
+
+    studentName.innerHTML =
+      '<option value="">Laden mislukt</option>';
+
+
+    studentName.disabled =
+      true;
+
+
+    statusMsg.textContent =
+      "Namen laden lukte niet. Kies de klas opnieuw om nogmaals te proberen.";
+
   }
+
 }
 
-classSelect.addEventListener("change", () => {
-  const klas = classSelect.value.trim();
 
-  studentName.disabled = true;
-  studentName.innerHTML = '<option value="">Kies eerst je klas</option>';
-  studentCode.value = "";
+/* =========================================================
+   G) KLAS KIEZEN
+========================================================= */
 
-  if(klas){
-    laadNamen(klas);
-  }else{
-    statusMsg.textContent = "Nog niet ingelogd.";
+classSelect.addEventListener(
+  "change",
+  () => {
+
+    const klas =
+      classSelect.value.trim();
+
+
+    /*
+      Oude aanvragen ongeldig maken.
+    */
+    naamLaadNummer++;
+
+
+    studentName.disabled =
+      true;
+
+
+    studentName.innerHTML =
+      '<option value="">Kies eerst je klas</option>';
+
+
+    studentCode.value =
+      "";
+
+
+    if (klas) {
+
+      laadNamen(
+        klas
+      );
+
+    } else {
+
+      statusMsg.textContent =
+        "Nog niet ingelogd.";
+
+    }
+
   }
-});
+);
 
-async function loginStudent(klas, naam, code){
+
+/* =========================================================
+   H) INLOGGEN BIJ GOOGLE SHEETS
+========================================================= */
+
+async function loginStudent(
+  klas,
+  naam,
+  code
+) {
+
   const url =
     `${SHEETS_EXEC_URL}?action=login`
     + `&klas=${encodeURIComponent(klas)}`
     + `&naam=${encodeURIComponent(naam)}`
     + `&code=${encodeURIComponent(code)}`;
 
-  return await jsonp(url);
+
+  /*
+    Ook bij inloggen één automatische
+    tweede poging als Google even traag is.
+  */
+  return await jsonpMetRetry(
+    url
+  );
+
 }
 
-async function login(){
-  const klas = classSelect.value.trim();
-  const naam = studentName.value.trim();
-  const code = studentCode.value.trim();
 
-  if(!klas || !naam || !code){
-    statusMsg.textContent = "Vul klas, naam en code in.";
+/* =========================================================
+   I) LOGIN
+========================================================= */
+
+async function login() {
+
+  const klas =
+    classSelect.value.trim();
+
+
+  const naam =
+    studentName.value.trim();
+
+
+  const code =
+    studentCode.value.trim();
+
+
+  if (
+    !klas
+    ||
+    !naam
+    ||
+    !code
+  ) {
+
+    statusMsg.textContent =
+      "Vul klas, naam en code in.";
+
+
     return;
   }
 
-  loginBtn.disabled = true;
-  statusMsg.textContent = "Inloggen…";
 
-  try{
-    const res = await loginStudent(klas, naam, code);
+  loginBtn.disabled =
+    true;
 
-    if(res && res.ok === true){
-      localStorage.setItem(STORAGE_CLASS, klas);
-      localStorage.setItem(STORAGE_CURRENT, naam);
-      localStorage.setItem(STORAGE_CODE, code);
 
-      statusMsg.textContent = "Inloggen gelukt ✅";
-      location.href = "menu.html";
+  classSelect.disabled =
+    true;
+
+
+  studentName.disabled =
+    true;
+
+
+  studentCode.disabled =
+    true;
+
+
+  statusMsg.textContent =
+    "Inloggen…";
+
+
+  try {
+
+    const res =
+      await loginStudent(
+        klas,
+        naam,
+        code
+      );
+
+
+    if (
+      res
+      &&
+      res.ok === true
+    ) {
+
+      /*
+        Leerlinggegevens bewaren.
+      */
+
+      localStorage.setItem(
+        STORAGE_CLASS,
+        klas
+      );
+
+
+      localStorage.setItem(
+        STORAGE_CURRENT,
+        naam
+      );
+
+
+      localStorage.setItem(
+        STORAGE_CODE,
+        code
+      );
+
+
+      statusMsg.textContent =
+        "Inloggen gelukt ✅";
+
+
+      location.href =
+        "menu.html";
+
+
       return;
     }
 
-    statusMsg.textContent = "Naam of code klopt niet.";
-  }catch(e){
-    statusMsg.textContent = "Naam of code klopt niet.";
-  }finally{
-    loginBtn.disabled = false;
+
+    /*
+      Apps Script kan ook een foutmelding
+      teruggeven.
+    */
+    statusMsg.textContent =
+      res?.error
+        ? "Naam of code klopt niet."
+        : "Inloggen mislukt.";
+
+
+  } catch(e) {
+
+    statusMsg.textContent =
+      "Verbinding met Google lukte niet. Probeer het nog eens.";
+
+
+  } finally {
+
+    loginBtn.disabled =
+      false;
+
+
+    classSelect.disabled =
+      false;
+
+
+    studentName.disabled =
+      false;
+
+
+    studentCode.disabled =
+      false;
+
   }
+
 }
 
-loginBtn.addEventListener("click", login);
 
-studentCode.addEventListener("keydown", (e) => {
-  if(e.key === "Enter") login();
-});
+/* =========================================================
+   J) KNOP + ENTER
+========================================================= */
+
+loginBtn.addEventListener(
+  "click",
+  login
+);
+
+
+studentCode.addEventListener(
+  "keydown",
+  (e) => {
+
+    if (
+      e.key === "Enter"
+    ) {
+
+      login();
+
+    }
+
+  }
+);
+
 </script>
+
 </body>
 </html>
