@@ -128,102 +128,100 @@
       line-height:1.35;
       margin-top:.5rem;
     }
+
+    .result{
+      margin-top:1rem;
+      font-weight:900;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
+<div class="box">
 
-    <div class="top">
+  <div class="top">
 
-      <a href="menu.html">← Menu</a>
+    <a href="menu.html">← Menu</a>
 
-      <div>
-        <span class="pill" id="who">Leerling: -</span>
-        <span class="pill" id="whichClass">Klas: -</span>
-      </div>
-
-    </div>
-
-
-    <h1>Keersommen</h1>
-
-
-    <div class="levelbar" id="level">
-      Niveau: laden…
-    </div>
-
-
-    <div class="smalltxt" id="sheetStatus">
-      Sheets: verbinden…
-    </div>
-
-
-    <div class="stats">
-
-      ⏱ <span id="time">2:00</span>
-
-      |
-
-      ✅ <span id="good">0</span>
-
-      |
-
-      📊 <span id="tries">0</span>
-
-    </div>
-
-
-    <div class="q" id="question">
-      Klik op start
-    </div>
-
-
-    <input
-      id="answer"
-      type="text"
-      inputmode="numeric"
-      pattern="[0-9]*"
-      placeholder="antwoord"
-      disabled
-    >
-
-
-    <div
-      class="feedback"
-      id="feedback">
-    </div>
-
-
-    <button id="startBtn" disabled>
-      Start
-    </button>
-
-
-    <div class="smalltxt">
-      Tip: druk op <b>Enter</b> om te controleren.
+    <div>
+      <span class="pill" id="who">Leerling: -</span>
+      <span class="pill" id="whichClass">Klas: -</span>
     </div>
 
   </div>
 
 
+  <h1>Keersommen</h1>
+
+
+  <div class="levelbar" id="level">
+    Niveau: laden…
+  </div>
+
+
+  <div class="smalltxt" id="sheetStatus">
+    Sheets: verbinden…
+  </div>
+
+
+  <div class="stats">
+    ⏱ <span id="time">2:00</span>
+    |
+    ✅ <span id="good">0</span>
+    |
+    📊 <span id="tries">0</span>
+  </div>
+
+
+  <div class="q" id="question">
+    Klik op start
+  </div>
+
+
+  <input
+    id="answer"
+    type="text"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    placeholder="antwoord"
+    disabled
+  >
+
+
+  <div
+    class="feedback"
+    id="feedback">
+  </div>
+
+
+  <button id="startBtn" disabled>
+    Start
+  </button>
+
+
+  <div id="result" class="result"></div>
+
+
+  <div class="smalltxt">
+    Tip: druk op <b>Enter</b> om te controleren.
+  </div>
+
+</div>
+
+
 <script>
 
 /* =========================================================
-   A) GOOGLE SHEETS
+   GOOGLE APPS SCRIPT
 ========================================================= */
 
-/*
-  Dit is dezelfde verbinding die je werkende Plus-pagina
-  momenteel gebruikt.
-*/
 const SHEETS_EXEC_URL =
   "https://script.google.com/macros/s/AKfycbwDqfW2yLkL2dX_ucTkz3ZxlHIsOAoZXocJCwpiJGZks77KqoxdvDK2BS6ox9GeCgGpEQ/exec";
 
 
 /* =========================================================
-   B) LEERLING + KLAS + CODE
+   LEERLING + KLAS + CODE
 ========================================================= */
 
 const STORAGE_CURRENT =
@@ -249,10 +247,6 @@ const studentCode =
   (localStorage.getItem(STORAGE_CODE) || "").trim();
 
 
-/*
-  Niet goed ingelogd?
-  Dan terug naar de startpagina.
-*/
 if (
   !studentId ||
   !studentClass ||
@@ -270,7 +264,7 @@ document.getElementById("whichClass").textContent =
 
 
 /* =========================================================
-   C) LOKALE BACK-UP
+   LOKALE BACK-UP
 ========================================================= */
 
 function dataKey() {
@@ -291,14 +285,14 @@ function getLocalData() {
   return raw
     ? JSON.parse(raw)
     : {
-        v: 1,
-        id: studentId,
-        klas: studentClass,
-        levels: {
-          plus: 0,
-          min: 0,
-          keer: 0,
-          deel: 0
+        v:1,
+        id:studentId,
+        klas:studentClass,
+        levels:{
+          plus:0,
+          min:0,
+          keer:0,
+          deel:0
         }
       };
 }
@@ -314,7 +308,7 @@ function setLocalData(d) {
 
 
 /* =========================================================
-   D) JSONP
+   JSONP
 ========================================================= */
 
 let __jsonpSeq = 0;
@@ -322,7 +316,7 @@ let __jsonpSeq = 0;
 
 function jsonp(url) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
 
     const cb =
       "__cb_"
@@ -342,16 +336,14 @@ function jsonp(url) {
       } catch(e) {}
 
       script.remove();
-
     };
 
 
-    window[cb] = (data) => {
+    window[cb] = data => {
 
       cleanup();
 
       resolve(data);
-
     };
 
 
@@ -362,7 +354,6 @@ function jsonp(url) {
       reject(
         new Error("JSONP failed")
       );
-
     };
 
 
@@ -386,7 +377,7 @@ function jsonp(url) {
 
 
 /* =========================================================
-   E) NIVEAUS OPHALEN
+   NIVEAUS OPHALEN
 ========================================================= */
 
 async function sheetsGet(
@@ -407,34 +398,54 @@ async function sheetsGet(
 
 
 /* =========================================================
-   F) KEER-NIVEAU OPSLAAN
+   AFGERONDE KEER-RONDE OPSLAAN
 ========================================================= */
 
 /*
-  BELANGRIJK:
+  Geen niveau omhoog:
 
-  Deze functie stuurt ALLEEN keer naar Apps Script.
+  played=1
+  promoted=0
 
-  Dus deze pagina kan NIET:
-  - de code veranderen
-  - plus veranderen
-  - min veranderen
-  - deel veranderen
+  → alleen kolom G
+
+
+  Wel niveau omhoog:
+
+  played=1
+  promoted=1
+  keer=nieuw niveau
+
+  → E, G en H
 */
 
-async function sheetsSetKeer(
+async function sheetsFinishKeer(
   klas,
   naam,
   code,
+  promoted,
   keerLevel
 ) {
 
-  const url =
+  let url =
     `${SHEETS_EXEC_URL}?action=set`
     + `&klas=${encodeURIComponent(klas)}`
     + `&naam=${encodeURIComponent(naam)}`
     + `&code=${encodeURIComponent(code)}`
-    + `&keer=${encodeURIComponent(keerLevel)}`;
+    + `&played=1`
+    + `&promoted=${promoted ? 1 : 0}`;
+
+
+  /*
+    Keer-niveau alleen meesturen
+    wanneer het echt omhoog gaat.
+  */
+
+  if (promoted) {
+
+    url +=
+      `&keer=${encodeURIComponent(keerLevel)}`;
+  }
 
 
   return await jsonp(url);
@@ -442,7 +453,7 @@ async function sheetsSetKeer(
 
 
 /* =========================================================
-   G) NIVEAUS
+   NIVEAUS
 ========================================================= */
 
 const LEVELS = [
@@ -474,9 +485,11 @@ const LEVELS = [
 
 const PROMOTE_AT = 24;
 
+const SECONDS = 120;
+
 
 /* =========================================================
-   H) SCHERMELEMENTEN
+   SCHERMELEMENTEN
 ========================================================= */
 
 const qEl =
@@ -506,16 +519,19 @@ const startBtn =
 const sheetStatusEl =
   document.getElementById("sheetStatus");
 
+const resultEl =
+  document.getElementById("result");
+
 
 /* =========================================================
-   I) STATUS
+   SPELSTATUS
 ========================================================= */
 
 let running = false;
 
 let timer = null;
 
-let time = 120;
+let time = SECONDS;
 
 let good = 0;
 
@@ -527,20 +543,15 @@ let sheetsOk = false;
 
 
 let levels = {
-
-  plus: 0,
-
-  min: 0,
-
-  keer: 0,
-
-  deel: 0
-
+  plus:0,
+  min:0,
+  keer:0,
+  deel:0
 };
 
 
 /* =========================================================
-   J) NIVEAU
+   NIVEAU
 ========================================================= */
 
 function clampLevel(lvl) {
@@ -556,9 +567,9 @@ function clampLevel(lvl) {
 
 
 /*
-  BELANGRIJK:
-  Keersommen kijkt ALLEEN naar levels.keer.
+  Keer kijkt uitsluitend naar levels.keer.
 */
+
 function getLevelIndex() {
 
   return clampLevel(
@@ -580,19 +591,21 @@ function renderLevel() {
 
 
 /* =========================================================
-   K) TIJD
+   TIJD
 ========================================================= */
 
 function fmtTime() {
 
   tEl.textContent =
     `${Math.floor(time / 60)}:`
-    + String(time % 60).padStart(2,"0");
+    + String(
+        time % 60
+      ).padStart(2,"0");
 }
 
 
 /* =========================================================
-   L) FEEDBACK
+   FEEDBACK
 ========================================================= */
 
 function setFeedback(
@@ -607,16 +620,17 @@ function setFeedback(
   fEl.className =
     "feedback "
     + (
-        ok
-          ? "good"
-          : "bad"
-      );
+      ok
+        ? "good"
+        : "bad"
+    );
 }
 
 
 function clearFeedback() {
 
-  fEl.textContent = "";
+  fEl.textContent =
+    "";
 
   fEl.className =
     "feedback";
@@ -624,10 +638,10 @@ function clearFeedback() {
 
 
 /* =========================================================
-   M) HULPFUNCTIES
+   HULPFUNCTIES
 ========================================================= */
 
-function r(min, max) {
+function r(min,max) {
 
   return Math.floor(
     Math.random()
@@ -639,13 +653,16 @@ function r(min, max) {
 function pick(arr) {
 
   return arr[
-    r(0, arr.length - 1)
+    r(
+      0,
+      arr.length - 1
+    )
   ];
 }
 
 
 /* =========================================================
-   N) SOMMEN MAKEN
+   SOMMEN MAKEN
 ========================================================= */
 
 function makeQuestion() {
@@ -654,10 +671,10 @@ function makeQuestion() {
     getLevelIndex();
 
 
-  /* --------------------------------
+  /* =====================================================
      NIVEAU 10
      STIPSOMMEN
-  -------------------------------- */
+  ===================================================== */
 
   if (lvl === 9) {
 
@@ -683,10 +700,10 @@ function makeQuestion() {
   }
 
 
-  /* --------------------------------
+  /* =====================================================
      NIVEAU 11
      GROTE KEERSOMMEN
-  -------------------------------- */
+  ===================================================== */
 
   if (lvl === 10) {
 
@@ -699,9 +716,9 @@ function makeQuestion() {
 
 
     /*
-      Bijvoorbeeld:
-      80 × 9
+      Bijvoorbeeld 80 × 9
     */
+
     if (type === "tiental") {
 
       const a =
@@ -728,9 +745,9 @@ function makeQuestion() {
 
 
     /*
-      Bijvoorbeeld:
-      800 × 9
+      Bijvoorbeeld 800 × 9
     */
+
     if (type === "honderdtal") {
 
       const a =
@@ -758,9 +775,9 @@ function makeQuestion() {
 
 
     /*
-      Bijvoorbeeld:
-      80 × 90
+      Bijvoorbeeld 80 × 90
     */
+
     const a =
       pick([
         10,20,30,40,50,
@@ -787,106 +804,61 @@ function makeQuestion() {
   }
 
 
-  /* --------------------------------
+  /* =====================================================
      NIVEAU 1 T/M 9
-  -------------------------------- */
+  ===================================================== */
 
   let tables = [2];
 
 
-  /*
-    Niveau 1
-  */
   if (lvl === 0) {
-
     tables = [2];
-
   }
 
 
-  /*
-    Niveau 2
-  */
   if (lvl === 1) {
-
     tables = [2,10];
-
   }
 
 
-  /*
-    Niveau 3
-  */
   if (lvl === 2) {
-
     tables = [2,5,10];
-
   }
 
 
-  /*
-    Niveau 4
-  */
   if (lvl === 3) {
-
     tables = [3,4];
-
   }
 
 
-  /*
-    Niveau 5
-  */
   if (lvl === 4) {
-
     tables = [
       2,3,4,5,10
     ];
-
   }
 
 
-  /*
-    Niveau 6
-  */
   if (lvl === 5) {
-
     tables = [6,7];
-
   }
 
 
-  /*
-    Niveau 7
-  */
   if (lvl === 6) {
-
     tables = [
       2,3,4,5,6,7,10
     ];
-
   }
 
 
-  /*
-    Niveau 8
-  */
   if (lvl === 7) {
-
     tables = [8,9];
-
   }
 
 
-  /*
-    Niveau 9
-  */
   if (lvl === 8) {
-
     tables = [
       2,3,4,5,6,7,8,9,10
     ];
-
   }
 
 
@@ -908,32 +880,10 @@ function makeQuestion() {
 
 
 /* =========================================================
-   O) KEER-NIVEAU OPSLAAN
+   KEER-NIVEAU LOKAAL OPSLAAN
 ========================================================= */
 
-async function saveKeerLevel() {
-
-  /*
-    Als Google Sheets verbonden is,
-    sturen we ALLEEN keer.
-  */
-  if (sheetsOk) {
-
-    await sheetsSetKeer(
-      studentClass,
-      studentId,
-      studentCode,
-      levels.keer
-    );
-
-    return;
-  }
-
-
-  /*
-    Als Sheets niet bereikbaar is,
-    alleen keer lokaal bewaren.
-  */
+function saveLocalKeerLevel() {
 
   const d =
     getLocalData();
@@ -941,15 +891,10 @@ async function saveKeerLevel() {
 
   d.levels =
     d.levels || {
-
-      plus: 0,
-
-      min: 0,
-
-      keer: 0,
-
-      deel: 0
-
+      plus:0,
+      min:0,
+      keer:0,
+      deel:0
     };
 
 
@@ -962,84 +907,74 @@ async function saveKeerLevel() {
 
 
 /* =========================================================
-   P) NIVEAU VERHOGEN
+   AFGERONDE RONDE OPSLAAN
 ========================================================= */
 
-async function promoteIfNeeded() {
+async function saveFinishedRound(
+  promoted
+) {
 
-  const lvl =
-    getLevelIndex();
+  /*
+    Nieuw niveau lokaal bewaren
+    wanneer leerling omhoog gaat.
+  */
+
+  if (promoted) {
+
+    saveLocalKeerLevel();
+  }
 
 
   /*
-    24 of meer goed:
-    alleen het KEER-niveau verhogen.
+    Iedere ronde naar Sheets sturen.
+
+    Geen promotie:
+    alleen played.
+
+    Wel promotie:
+    played + promoted + keer.
   */
 
-  if (
-    good >= PROMOTE_AT
-    &&
-    lvl < LEVELS.length - 1
-  ) {
+  if (sheetsOk) {
 
-    levels.keer =
-      lvl + 1;
-
-
-    renderLevel();
-
-
-    sheetStatusEl.textContent =
-      sheetsOk
-        ? "Sheets: niveau opslaan…"
-        : "Lokaal: niveau opslaan…";
-
-
-    try {
-
-      await saveKeerLevel();
-
-
-      sheetStatusEl.textContent =
-        sheetsOk
-          ? "Sheets: opgeslagen ✅"
-          : "Lokaal: opgeslagen ✅";
-
-
-    } catch (e) {
-
-      sheetStatusEl.textContent =
-        sheetsOk
-          ? "Sheets: opslaan mislukt ⚠️"
-          : "Lokaal: opslaan mislukt ⚠️";
-
-    }
-
-
-    alert("🎉 Niveau omhoog!");
-
+    await sheetsFinishKeer(
+      studentClass,
+      studentId,
+      studentCode,
+      promoted,
+      levels.keer
+    );
   }
 }
 
 
 /* =========================================================
-   Q) START
+   START
 ========================================================= */
 
 function startRun() {
 
-  running = true;
+  if (running) {
+    return;
+  }
+
+
+  running =
+    true;
 
 
   startBtn.disabled =
     true;
 
 
-  time = 120;
+  time =
+    SECONDS;
 
-  good = 0;
+  good =
+    0;
 
-  tries = 0;
+  tries =
+    0;
 
 
   fmtTime();
@@ -1051,6 +986,10 @@ function startRun() {
 
   triesEl.textContent =
     "0";
+
+
+  resultEl.textContent =
+    "";
 
 
   clearFeedback();
@@ -1073,13 +1012,12 @@ function startRun() {
   if (timer) {
 
     clearInterval(timer);
-
   }
 
 
   timer =
     setInterval(
-      async () => {
+      () => {
 
         time--;
 
@@ -1089,23 +1027,7 @@ function startRun() {
 
         if (time <= 0) {
 
-          clearInterval(timer);
-
-          timer = null;
-
-          running = false;
-
-
-          aEl.disabled =
-            true;
-
-
-          startBtn.disabled =
-            false;
-
-
-          await promoteIfNeeded();
-
+          endRun();
         }
 
       },
@@ -1115,7 +1037,126 @@ function startRun() {
 
 
 /* =========================================================
-   R) ANTWOORD CONTROLEREN
+   EINDE VAN DE RONDE
+========================================================= */
+
+async function endRun() {
+
+  /*
+    Voorkomt dat endRun tweemaal
+    kan worden uitgevoerd.
+  */
+
+  if (!running) {
+    return;
+  }
+
+
+  clearInterval(timer);
+
+  timer =
+    null;
+
+
+  running =
+    false;
+
+
+  aEl.disabled =
+    true;
+
+
+  startBtn.disabled =
+    false;
+
+
+  const oldLevel =
+    getLevelIndex();
+
+
+  /*
+    24 of meer goed:
+    niveau omhoog indien mogelijk.
+  */
+
+  const promoted =
+    good >= PROMOTE_AT
+    &&
+    oldLevel < LEVELS.length - 1;
+
+
+  if (promoted) {
+
+    levels.keer =
+      oldLevel + 1;
+
+
+    renderLevel();
+  }
+
+
+  /*
+    Iedere afgeronde ronde opslaan.
+  */
+
+  sheetStatusEl.textContent =
+    sheetsOk
+      ? "Sheets: spel opslaan…"
+      : "Lokaal: opslaan…";
+
+
+  try {
+
+    await saveFinishedRound(
+      promoted
+    );
+
+
+    sheetStatusEl.textContent =
+      sheetsOk
+        ? "Sheets: opgeslagen ✅"
+        : "Lokaal: opgeslagen ✅";
+
+
+  } catch(e) {
+
+    sheetStatusEl.textContent =
+      "Sheets: opslaan mislukt ⚠️";
+  }
+
+
+  const pct =
+    Math.round(
+      (good / tries) * 100
+    ) || 0;
+
+
+  let msg =
+    `Je had ${good} goed van ${tries} pogingen. (${pct}%)`;
+
+
+  if (promoted) {
+
+    msg +=
+      " 🎉 Niveau omhoog!";
+
+  } else {
+
+    msg +=
+      ` (Huidig niveau: ${LEVELS[oldLevel]})`;
+  }
+
+
+  resultEl.textContent =
+    msg;
+
+
+  renderLevel();
+}
+
+
+/* =========================================================
+   ANTWOORD CONTROLEREN
 ========================================================= */
 
 function submitAnswer() {
@@ -1128,7 +1169,10 @@ function submitAnswer() {
   const raw =
     aEl.value
       .trim()
-      .replace(/[^0-9]/g, "");
+      .replace(
+        /[^0-9]/g,
+        ""
+      );
 
 
   if (raw === "") {
@@ -1170,7 +1214,6 @@ function submitAnswer() {
       `Fout (antwoord: ${correctAnswer})`,
       false
     );
-
   }
 
 
@@ -1186,19 +1229,19 @@ function submitAnswer() {
 
 
 /* =========================================================
-   S) ENTER + STARTKNOP
+   ENTER + STARTKNOP
 ========================================================= */
 
 aEl.addEventListener(
   "keydown",
-  (e) => {
+  e => {
 
-    if (e.key === "Enter") {
+    if (
+      e.key === "Enter"
+    ) {
 
       submitAnswer();
-
     }
-
   }
 );
 
@@ -1210,7 +1253,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   T) LOKALE VOORVERTONING
+   LOKALE VOORVERTONING
 ========================================================= */
 
 (function initLocalPreview() {
@@ -1245,7 +1288,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   U) GOOGLE SHEETS LADEN
+   GOOGLE SHEETS LADEN
 ========================================================= */
 
 (async function initSheets() {
@@ -1276,11 +1319,6 @@ startBtn.addEventListener(
       res.levels
     ) {
 
-      /*
-        Alle niveaus worden opgehaald,
-        maar Keer gebruikt alleen levels.keer.
-      */
-
       levels = {
 
         plus:
@@ -1294,7 +1332,6 @@ startBtn.addEventListener(
 
         deel:
           Number(res.levels.deel) || 0
-
       };
 
 
@@ -1307,7 +1344,7 @@ startBtn.addEventListener(
 
 
       /*
-        Sheet-data lokaal opslaan als back-up.
+        Geldige Sheet-data lokaal bewaren.
       */
 
       const local =
@@ -1315,11 +1352,8 @@ startBtn.addEventListener(
 
 
       local.levels = {
-
         ...local.levels,
-
         ...levels
-
       };
 
 
@@ -1331,11 +1365,10 @@ startBtn.addEventListener(
       throw new Error(
         "Unexpected response"
       );
-
     }
 
 
-  } catch (e) {
+  } catch(e) {
 
     sheetsOk =
       false;
@@ -1343,7 +1376,6 @@ startBtn.addEventListener(
 
     sheetStatusEl.textContent =
       "Kon niveau niet laden uit Sheets (lokale backup gebruikt).";
-
   }
 
 
