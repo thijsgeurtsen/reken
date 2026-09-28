@@ -1,213 +1,173 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Start – Rekenen</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Rekenen – Start</title>
 
   <style>
+    *{
+      box-sizing:border-box;
+    }
+
     body{
-      font-family:system-ui,sans-serif;
-      background:#f4f6ff;
       margin:0;
       min-height:100vh;
       display:flex;
       justify-content:center;
       align-items:center;
-      padding:24px;
+      padding:20px;
+      font-family:system-ui,sans-serif;
+      background:#f4f6ff;
     }
 
     .box{
-      background:#fff;
-      padding:2.2rem;
-      border-radius:1.8rem;
-      box-shadow:0 10px 30px rgba(0,0,0,.08);
-      max-width:560px;
-      width:100%;
+      width:min(95%,680px);
+      background:white;
+      padding:3rem 2.5rem;
+      border-radius:2rem;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
       text-align:center;
     }
 
     h1{
-      margin:0 0 .4rem;
-      font-size:2.2rem;
+      margin:0 0 .5rem;
+      font-size:2.7rem;
     }
 
     .sub{
-      margin:0 0 1.4rem;
-      color:#555;
-      font-size:1.05rem;
+      margin:0 0 1.8rem;
+      color:#444;
+      font-size:1.15rem;
     }
 
     select,
     input{
+      display:block;
       width:100%;
-      font-size:1.1rem;
+      font-size:1.15rem;
       padding:1rem 1.1rem;
-      border-radius:1.1rem;
-      border:2px solid #cfd3ff;
+      margin:.9rem 0;
+      border:2px solid #d8dcff;
+      border-radius:1rem;
+      background:white;
       outline:none;
-      background:#fff;
-      box-sizing:border-box;
-      margin-bottom:.9rem;
     }
 
     select:focus,
     input:focus{
       border-color:#4f46e5;
-      box-shadow:0 0 0 4px rgba(79,70,229,.15);
+      box-shadow:0 0 0 3px rgba(79,70,229,.15);
+    }
+
+    select:disabled,
+    input:disabled{
+      color:#999;
+      background:#fafafa;
     }
 
     button{
-      margin-top:.4rem;
-      padding:1rem 1.4rem;
+      margin-top:.7rem;
+      padding:.9rem 2rem;
+      min-width:170px;
       border:none;
       border-radius:999px;
       background:#4f46e5;
-      color:#fff;
+      color:white;
+      font-size:1.1rem;
       font-weight:900;
-      font-size:1rem;
       cursor:pointer;
-      min-width:160px;
     }
 
     button:disabled{
-      background:#b9b9c7;
+      background:#bbb;
       cursor:default;
     }
 
     .status{
-      margin-top:.9rem;
+      margin-top:1rem;
+      min-height:1.5rem;
       color:#555;
-      font-size:.95rem;
-      min-height:1.4rem;
+    }
+
+    .error{
+      color:#dc2626;
+      font-weight:700;
+    }
+
+    .good{
+      color:#15803d;
+      font-weight:700;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
+<div class="box">
 
-    <h1>Start</h1>
+  <h1>Start</h1>
 
-    <p class="sub">
-      Kies je klas en log in met je naam en code
-    </p>
-
-
-    <select id="classSelect">
-
-      <option value="">
-        Kies je klas
-      </option>
-
-      <option value="LianneLaura">
-        LianneLaura
-      </option>
-
-      <option value="MetteJur">
-        MetteJur
-      </option>
-
-      <option value="Jochem">
-        Jochem
-      </option>
-
-      <option value="JaraMette">
-        JaraMette
-      </option>
-
-      <option value="NatashaAnoek">
-        NatashaAnoek
-      </option>
-
-      <option value="SanneSander">
-        SanneSander
-      </option>
-
-      <option value="AnoekThijs">
-        AnoekThijs
-      </option>
-
-      <option value="Adne">
-        Adne
-      </option>
-
-      <option value="Stefan">
-        Stefan
-      </option>
-
-      <option value="KarinMirjam">
-        KarinMirjam
-      </option>
-
-      <option value="FionaMieke">
-        FionaMieke
-      </option>
-
-      <option value="Mike">
-        Mike
-      </option>
-
-      <option value="SandraJoris">
-        SandraJoris
-      </option>
-
-    </select>
+  <p class="sub">
+    Kies je klas en log in met je naam en code
+  </p>
 
 
-    <select
-      id="studentName"
-      disabled
-    >
+  <select id="classSelect">
+    <option value="">Kies je klas</option>
 
-      <option value="">
-        Kies eerst je klas
-      </option>
-
-    </select>
-
-
-    <input
-      id="studentCode"
-      type="password"
-      placeholder="Jouw code"
-      autocomplete="current-password"
-      autocapitalize="none"
-      spellcheck="false"
-    />
+    <option value="LianneLaura">LianneLaura</option>
+    <option value="MetteJur">MetteJur</option>
+    <option value="Jochem">Jochem</option>
+    <option value="JaraMette">JaraMette</option>
+    <option value="NatashaAnoek">NatashaAnoek</option>
+    <option value="SanneSander">SanneSander</option>
+    <option value="AnoekThijs">AnoekThijs</option>
+    <option value="Adne">Adne</option>
+    <option value="Stefan">Stefan</option>
+    <option value="KarinMirjam">KarinMirjam</option>
+    <option value="FionaMieke">FionaMieke</option>
+    <option value="Mike">Mike</option>
+    <option value="SandraJoris">SandraJoris</option>
+  </select>
 
 
-    <button
-      id="loginBtn"
-      type="button"
-    >
-      Inloggen
-    </button>
+  <select id="studentSelect" disabled>
+    <option value="">Kies eerst je klas</option>
+  </select>
 
 
-    <div
-      class="status"
-      id="statusMsg"
-    >
-      Nog niet ingelogd.
-    </div>
+  <input
+    id="codeInput"
+    type="password"
+    placeholder="Jouw code"
+    autocomplete="off"
+  >
 
-  </div>
+
+  <button id="loginBtn" disabled>
+    Inloggen
+  </button>
+
+
+  <div id="status" class="status"></div>
+
+</div>
 
 
 <script>
 
 /* =========================================================
-   A) GOOGLE APPS SCRIPT
+   GOOGLE APPS SCRIPT
 ========================================================= */
 
 const SHEETS_EXEC_URL =
-  "https://script.google.com/macros/s/AKfycbzFx3ki9rkHmZ7BxfP87RlbTKaegN34eHiBC24V_yBt4h6yyXRoAuA5gPiSyOrWtWh76w/exec";";
+  "https://script.google.com/macros/s/AKfycbz-13F67vdmwulyOw5QVfO9AW25louOoFU6on6MlBvbSzxjzjuR8mbEwfTHzSZaSCeyvQ/exec";
 
 
 /* =========================================================
-   B) LOCAL STORAGE
+   OPSLAG
 ========================================================= */
 
 const STORAGE_CURRENT =
@@ -221,226 +181,156 @@ const STORAGE_CODE =
 
 
 /* =========================================================
-   C) SCHERMELEMENTEN
+   ELEMENTEN
 ========================================================= */
 
 const classSelect =
   document.getElementById("classSelect");
 
-const studentName =
-  document.getElementById("studentName");
+const studentSelect =
+  document.getElementById("studentSelect");
 
-const studentCode =
-  document.getElementById("studentCode");
+const codeInput =
+  document.getElementById("codeInput");
 
 const loginBtn =
   document.getElementById("loginBtn");
 
-const statusMsg =
-  document.getElementById("statusMsg");
+const statusEl =
+  document.getElementById("status");
 
 
 /* =========================================================
-   D) JSONP
+   JSONP
 ========================================================= */
 
-let __jsonpSeq = 0;
+let jsonpCounter = 0;
 
 
-/*
-  Na 8 seconden stoppen we met wachten.
+function jsonp(
+  url,
+  timeoutMs = 8000
+) {
 
-  Dat voorkomt dat de pagina eindeloos op
-  "Namen laden..." blijft staan.
-*/
-function jsonp(url, timeoutMs = 8000) {
+  return new Promise(
+    (resolve,reject) => {
 
-  return new Promise((resolve, reject) => {
-
-    const cb =
-      "__cb_"
-      + (++__jsonpSeq)
-      + "_"
-      + Date.now();
+      const callback =
+        "__reken_cb_"
+        + (++jsonpCounter)
+        + "_"
+        + Date.now();
 
 
-    const script =
-      document.createElement("script");
+      const script =
+        document.createElement("script");
 
 
-    let finished = false;
+      let klaar =
+        false;
 
 
-    const cleanup = () => {
+      const cleanup =
+        () => {
 
-      if (finished) {
-        return;
-      }
+          try {
+            delete window[callback];
+          } catch(e) {}
 
-      finished = true;
-
-
-      clearTimeout(timeout);
-
-
-      try {
-        delete window[cb];
-      } catch(e) {}
+          script.remove();
+        };
 
 
-      if (script.parentNode) {
-        script.remove();
-      }
+      const timer =
+        setTimeout(
+          () => {
 
-    };
+            if (klaar) {
+              return;
+            }
 
+            klaar =
+              true;
 
-    window[cb] = (data) => {
+            cleanup();
 
-      if (finished) {
-        return;
-      }
+            reject(
+              new Error("timeout")
+            );
 
-
-      cleanup();
-
-      resolve(data);
-
-    };
-
-
-    script.onerror = () => {
-
-      if (finished) {
-        return;
-      }
-
-
-      cleanup();
-
-      reject(
-        new Error("Verbinding mislukt")
-      );
-
-    };
-
-
-    const timeout =
-      setTimeout(() => {
-
-        if (finished) {
-          return;
-        }
-
-
-        cleanup();
-
-        reject(
-          new Error("Timeout")
+          },
+          timeoutMs
         );
 
-      }, timeoutMs);
+
+      window[callback] =
+        data => {
+
+          if (klaar) {
+            return;
+          }
+
+          klaar =
+            true;
+
+          clearTimeout(timer);
+
+          cleanup();
+
+          resolve(data);
+        };
 
 
-    const sep =
-      url.includes("?")
-        ? "&"
-        : "?";
+      script.onerror =
+        () => {
+
+          if (klaar) {
+            return;
+          }
+
+          klaar =
+            true;
+
+          clearTimeout(timer);
+
+          cleanup();
+
+          reject(
+            new Error("JSONP failed")
+          );
+        };
 
 
-    /*
-      Tijdstempel voorkomt ongewenste browser-cache.
-    */
-    script.src =
-      url
-      + sep
-      + "callback="
-      + encodeURIComponent(cb)
-      + "&_="
-      + Date.now();
+      const sep =
+        url.includes("?")
+          ? "&"
+          : "?";
 
 
-    document.body.appendChild(script);
+      script.src =
+        url
+        + sep
+        + "callback="
+        + encodeURIComponent(callback)
+        + "&_="
+        + Date.now();
 
-  });
 
+      document.body.appendChild(
+        script
+      );
+    }
+  );
 }
 
 
 /* =========================================================
-   E) AUTOMATISCH OPNIEUW PROBEREN
+   LEERLINGEN OPHALEN
 ========================================================= */
 
-async function jsonpMetRetry(url) {
-
-  try {
-
-    /*
-      Eerste poging.
-    */
-    return await jsonp(
-      url,
-      8000
-    );
-
-
-  } catch (eersteFout) {
-
-    /*
-      Google kan soms even wakker moeten worden.
-
-      Kleine pauze en daarna automatisch
-      nog één poging.
-    */
-
-    await new Promise(
-      resolve =>
-        setTimeout(resolve, 600)
-    );
-
-
-    return await jsonp(
-      url,
-      10000
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   F) NAMEN LADEN
-========================================================= */
-
-/*
-  Hiermee voorkomen we dat een oude aanvraag
-  later een nieuw gekozen klas overschrijft.
-*/
-let naamLaadNummer = 0;
-
-
-async function laadNamen(klas) {
-
-  const mijnLaadNummer =
-    ++naamLaadNummer;
-
-
-  studentName.disabled =
-    true;
-
-
-  studentName.innerHTML =
-    '<option value="">Namen laden...</option>';
-
-
-  studentCode.value =
-    "";
-
-
-  statusMsg.textContent =
-    "Namen laden…";
-
+async function getStudents(
+  klas
+) {
 
   const url =
     `${SHEETS_EXEC_URL}?action=students`
@@ -449,177 +339,36 @@ async function laadNamen(klas) {
 
   try {
 
-    const res =
-      await jsonpMetRetry(url);
-
-
-    /*
-      Heeft de leerling ondertussen een andere
-      klas gekozen?
-
-      Dan negeren we deze oude reactie.
-    */
-    if (
-      mijnLaadNummer !== naamLaadNummer
-    ) {
-      return;
-    }
-
-
-    if (
-      classSelect.value.trim() !== klas
-    ) {
-      return;
-    }
-
-
-    studentName.innerHTML =
-      '<option value="">Kies je naam</option>';
-
-
-    if (
-      !res
-      ||
-      res.ok !== true
-      ||
-      !Array.isArray(res.students)
-    ) {
-
-      studentName.innerHTML =
-        '<option value="">Geen namen gevonden</option>';
-
-
-      statusMsg.textContent =
-        "Geen namen gevonden.";
-
-
-      return;
-    }
-
-
-    /*
-      Namen toevoegen.
-    */
-    res.students.forEach(
-      leerling => {
-
-        const naam =
-          typeof leerling === "string"
-            ? leerling
-            : leerling.naam;
-
-
-        if (!naam) {
-          return;
-        }
-
-
-        const option =
-          document.createElement("option");
-
-
-        option.value =
-          naam;
-
-
-        option.textContent =
-          naam;
-
-
-        studentName.appendChild(
-          option
-        );
-
-      }
+    return await jsonp(
+      url,
+      8000
     );
-
-
-    studentName.disabled =
-      false;
-
-
-    statusMsg.textContent =
-      `${res.students.length} leerlingen geladen. Kies je naam en vul je code in.`;
-
 
   } catch(e) {
 
     /*
-      Alleen fout tonen als deze aanvraag
-      nog steeds bij de gekozen klas hoort.
+      Eén keer opnieuw proberen.
     */
-    if (
-      mijnLaadNummer !== naamLaadNummer
-    ) {
-      return;
-    }
+
+    await new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          600
+        )
+    );
 
 
-    studentName.innerHTML =
-      '<option value="">Laden mislukt</option>';
-
-
-    studentName.disabled =
-      true;
-
-
-    statusMsg.textContent =
-      "Namen laden lukte niet. Kies de klas opnieuw om nogmaals te proberen.";
-
+    return await jsonp(
+      url,
+      10000
+    );
   }
-
 }
 
 
 /* =========================================================
-   G) KLAS KIEZEN
-========================================================= */
-
-classSelect.addEventListener(
-  "change",
-  () => {
-
-    const klas =
-      classSelect.value.trim();
-
-
-    /*
-      Oude aanvragen ongeldig maken.
-    */
-    naamLaadNummer++;
-
-
-    studentName.disabled =
-      true;
-
-
-    studentName.innerHTML =
-      '<option value="">Kies eerst je klas</option>';
-
-
-    studentCode.value =
-      "";
-
-
-    if (klas) {
-
-      laadNamen(
-        klas
-      );
-
-    } else {
-
-      statusMsg.textContent =
-        "Nog niet ingelogd.";
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   H) INLOGGEN BIJ GOOGLE SHEETS
+   LOGIN
 ========================================================= */
 
 async function loginStudent(
@@ -635,95 +384,273 @@ async function loginStudent(
     + `&code=${encodeURIComponent(code)}`;
 
 
-  /*
-    Ook bij inloggen één automatische
-    tweede poging als Google even traag is.
-  */
-  return await jsonpMetRetry(
-    url
+  return await jsonp(
+    url,
+    10000
   );
-
 }
 
 
 /* =========================================================
-   I) LOGIN
+   STATUS
 ========================================================= */
 
-async function login() {
+function setStatus(
+  tekst,
+  soort = ""
+) {
 
-  const klas =
-    classSelect.value.trim();
+  statusEl.textContent =
+    tekst;
 
-
-  const naam =
-    studentName.value.trim();
-
-
-  const code =
-    studentCode.value.trim();
-
-
-  if (
-    !klas
-    ||
-    !naam
-    ||
-    !code
-  ) {
-
-    statusMsg.textContent =
-      "Vul klas, naam en code in.";
+  statusEl.className =
+    "status"
+    + (
+        soort
+          ? " " + soort
+          : ""
+      );
+}
 
 
-    return;
-  }
+/* =========================================================
+   LOGIN-KNOP
+========================================================= */
 
+function updateLoginButton() {
 
   loginBtn.disabled =
-    true;
+    !classSelect.value
+    ||
+    !studentSelect.value
+    ||
+    !codeInput.value.trim();
+}
 
 
-  classSelect.disabled =
-    true;
+studentSelect.addEventListener(
+  "change",
+  updateLoginButton
+);
 
 
-  studentName.disabled =
-    true;
+codeInput.addEventListener(
+  "input",
+  updateLoginButton
+);
 
 
-  studentCode.disabled =
-    true;
+/* =========================================================
+   KLAS KIEZEN
+========================================================= */
+
+let naamLaadNummer =
+  0;
 
 
-  statusMsg.textContent =
-    "Inloggen…";
+classSelect.addEventListener(
+  "change",
+  async () => {
+
+    const klas =
+      classSelect.value;
 
 
-  try {
+    const mijnNummer =
+      ++naamLaadNummer;
 
-    const res =
-      await loginStudent(
-        klas,
-        naam,
-        code
+
+    studentSelect.disabled =
+      true;
+
+    studentSelect.innerHTML =
+      `<option value="">Namen laden…</option>`;
+
+    loginBtn.disabled =
+      true;
+
+
+    setStatus("");
+
+
+    if (!klas) {
+
+      studentSelect.innerHTML =
+        `<option value="">Kies eerst je klas</option>`;
+
+      return;
+    }
+
+
+    try {
+
+      const res =
+        await getStudents(
+          klas
+        );
+
+
+      /*
+        Als inmiddels een andere klas is gekozen:
+        deze reactie negeren.
+      */
+
+      if (
+        mijnNummer !==
+        naamLaadNummer
+      ) {
+
+        return;
+      }
+
+
+      if (
+        !res
+        ||
+        res.ok !== true
+        ||
+        !Array.isArray(
+          res.students
+        )
+      ) {
+
+        throw new Error(
+          "Ongeldig antwoord"
+        );
+      }
+
+
+      studentSelect.innerHTML =
+        `<option value="">Kies je naam</option>`;
+
+
+      for (
+        const naam of res.students
+      ) {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+
+        option.value =
+          naam;
+
+        option.textContent =
+          naam;
+
+
+        studentSelect.appendChild(
+          option
+        );
+      }
+
+
+      studentSelect.disabled =
+        false;
+
+
+      setStatus(
+        "Namen geladen.",
+        "good"
       );
+
+
+    } catch(e) {
+
+      if (
+        mijnNummer !==
+        naamLaadNummer
+      ) {
+
+        return;
+      }
+
+
+      studentSelect.innerHTML =
+        `<option value="">Laden mislukt</option>`;
+
+
+      studentSelect.disabled =
+        true;
+
+
+      setStatus(
+        "Namen laden lukte niet. Kies de klas opnieuw om nogmaals te proberen.",
+        "error"
+      );
+    }
+  }
+);
+
+
+/* =========================================================
+   INLOGGEN
+========================================================= */
+
+loginBtn.addEventListener(
+  "click",
+  async () => {
+
+    const klas =
+      classSelect.value;
+
+    const naam =
+      studentSelect.value;
+
+    const code =
+      codeInput.value.trim();
 
 
     if (
-      res
-      &&
-      res.ok === true
+      !klas ||
+      !naam ||
+      !code
     ) {
 
-      /*
-        Leerlinggegevens bewaren.
-      */
+      return;
+    }
 
-      localStorage.setItem(
-        STORAGE_CLASS,
-        klas
-      );
+
+    loginBtn.disabled =
+      true;
+
+    classSelect.disabled =
+      true;
+
+    studentSelect.disabled =
+      true;
+
+    codeInput.disabled =
+      true;
+
+
+    setStatus(
+      "Inloggen…"
+    );
+
+
+    try {
+
+      const res =
+        await loginStudent(
+          klas,
+          naam,
+          code
+        );
+
+
+      if (
+        !res ||
+        res.ok !== true
+      ) {
+
+        throw new Error(
+          res?.error ||
+          "Inloggen mislukt"
+        );
+      }
 
 
       localStorage.setItem(
@@ -733,83 +660,61 @@ async function login() {
 
 
       localStorage.setItem(
-        STORAGE_CODE,
-        code
+        STORAGE_CLASS,
+        klas
       );
 
 
-      statusMsg.textContent =
-        "Inloggen gelukt ✅";
+      localStorage.setItem(
+        STORAGE_CODE,
+        code
+      );
 
 
       location.href =
         "menu.html";
 
 
-      return;
+    } catch(e) {
+
+      setStatus(
+        "Naam of code klopt niet.",
+        "error"
+      );
+
+
+      classSelect.disabled =
+        false;
+
+      studentSelect.disabled =
+        false;
+
+      codeInput.disabled =
+        false;
+
+
+      updateLoginButton();
     }
-
-
-    /*
-      Apps Script kan ook een foutmelding
-      teruggeven.
-    */
-    statusMsg.textContent =
-      res?.error
-        ? "Naam of code klopt niet."
-        : "Inloggen mislukt.";
-
-
-  } catch(e) {
-
-    statusMsg.textContent =
-      "Verbinding met Google lukte niet. Probeer het nog eens.";
-
-
-  } finally {
-
-    loginBtn.disabled =
-      false;
-
-
-    classSelect.disabled =
-      false;
-
-
-    studentName.disabled =
-      false;
-
-
-    studentCode.disabled =
-      false;
-
   }
-
-}
-
-
-/* =========================================================
-   J) KNOP + ENTER
-========================================================= */
-
-loginBtn.addEventListener(
-  "click",
-  login
 );
 
 
-studentCode.addEventListener(
+/* =========================================================
+   ENTER BIJ CODE
+========================================================= */
+
+codeInput.addEventListener(
   "keydown",
-  (e) => {
+  e => {
 
     if (
       e.key === "Enter"
+      &&
+      !loginBtn.disabled
     ) {
 
-      login();
-
+      loginBtn.click();
     }
-
   }
 );
 
