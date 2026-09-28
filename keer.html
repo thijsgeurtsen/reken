@@ -342,7 +342,6 @@ function jsonp(url) {
     window[cb] = data => {
 
       cleanup();
-
       resolve(data);
     };
 
@@ -350,10 +349,7 @@ function jsonp(url) {
     script.onerror = () => {
 
       cleanup();
-
-      reject(
-        new Error("JSONP failed")
-      );
+      reject(new Error("JSONP failed"));
     };
 
 
@@ -401,24 +397,6 @@ async function sheetsGet(
    AFGERONDE KEER-RONDE OPSLAAN
 ========================================================= */
 
-/*
-  Geen niveau omhoog:
-
-  played=1
-  promoted=0
-
-  → alleen kolom G
-
-
-  Wel niveau omhoog:
-
-  played=1
-  promoted=1
-  keer=nieuw niveau
-
-  → E, G en H
-*/
-
 async function sheetsFinishKeer(
   klas,
   naam,
@@ -433,13 +411,9 @@ async function sheetsFinishKeer(
     + `&naam=${encodeURIComponent(naam)}`
     + `&code=${encodeURIComponent(code)}`
     + `&played=1`
-    + `&promoted=${promoted ? 1 : 0}`;
+    + `&promoted=${promoted ? 1 : 0}`
+    + `&game=keer`;
 
-
-  /*
-    Keer-niveau alleen meesturen
-    wanneer het echt omhoog gaat.
-  */
 
   if (promoted) {
 
@@ -484,7 +458,6 @@ const LEVELS = [
 
 
 const PROMOTE_AT = 24;
-
 const SECONDS = 120;
 
 
@@ -528,17 +501,11 @@ const resultEl =
 ========================================================= */
 
 let running = false;
-
 let timer = null;
-
 let time = SECONDS;
-
 let good = 0;
-
 let tries = 0;
-
 let correctAnswer = 0;
-
 let sheetsOk = false;
 
 
@@ -565,10 +532,6 @@ function clampLevel(lvl) {
   );
 }
 
-
-/*
-  Keer kijkt uitsluitend naar levels.keer.
-*/
 
 function getLevelIndex() {
 
@@ -598,9 +561,7 @@ function fmtTime() {
 
   tEl.textContent =
     `${Math.floor(time / 60)}:`
-    + String(
-        time % 60
-      ).padStart(2,"0");
+    + String(time % 60).padStart(2,"0");
 }
 
 
@@ -653,10 +614,7 @@ function r(min,max) {
 function pick(arr) {
 
   return arr[
-    r(
-      0,
-      arr.length - 1
-    )
+    r(0,arr.length - 1)
   ];
 }
 
@@ -670,11 +628,6 @@ function makeQuestion() {
   const lvl =
     getLevelIndex();
 
-
-  /* =====================================================
-     NIVEAU 10
-     STIPSOMMEN
-  ===================================================== */
 
   if (lvl === 9) {
 
@@ -700,11 +653,6 @@ function makeQuestion() {
   }
 
 
-  /* =====================================================
-     NIVEAU 11
-     GROTE KEERSOMMEN
-  ===================================================== */
-
   if (lvl === 10) {
 
     const type =
@@ -714,10 +662,6 @@ function makeQuestion() {
         "tientalxtiental"
       ]);
 
-
-    /*
-      Bijvoorbeeld 80 × 9
-    */
 
     if (type === "tiental") {
 
@@ -743,10 +687,6 @@ function makeQuestion() {
       return;
     }
 
-
-    /*
-      Bijvoorbeeld 800 × 9
-    */
 
     if (type === "honderdtal") {
 
@@ -774,10 +714,6 @@ function makeQuestion() {
     }
 
 
-    /*
-      Bijvoorbeeld 80 × 90
-    */
-
     const a =
       pick([
         10,20,30,40,50,
@@ -804,11 +740,8 @@ function makeQuestion() {
   }
 
 
-  /* =====================================================
-     NIVEAU 1 T/M 9
-  ===================================================== */
-
-  let tables = [2];
+  let tables =
+    [2];
 
 
   if (lvl === 0) {
@@ -832,33 +765,37 @@ function makeQuestion() {
 
 
   if (lvl === 4) {
-    tables = [
-      2,3,4,5,10
-    ];
+
+    tables =
+      [2,3,4,5,10];
   }
 
 
   if (lvl === 5) {
-    tables = [6,7];
+
+    tables =
+      [6,7];
   }
 
 
   if (lvl === 6) {
-    tables = [
-      2,3,4,5,6,7,10
-    ];
+
+    tables =
+      [2,3,4,5,6,7,10];
   }
 
 
   if (lvl === 7) {
-    tables = [8,9];
+
+    tables =
+      [8,9];
   }
 
 
   if (lvl === 8) {
-    tables = [
-      2,3,4,5,6,7,8,9,10
-    ];
+
+    tables =
+      [2,3,4,5,6,7,8,9,10];
   }
 
 
@@ -880,7 +817,7 @@ function makeQuestion() {
 
 
 /* =========================================================
-   KEER-NIVEAU LOKAAL OPSLAAN
+   KEER LOKAAL OPSLAAN
 ========================================================= */
 
 function saveLocalKeerLevel() {
@@ -914,26 +851,11 @@ async function saveFinishedRound(
   promoted
 ) {
 
-  /*
-    Nieuw niveau lokaal bewaren
-    wanneer leerling omhoog gaat.
-  */
-
   if (promoted) {
 
     saveLocalKeerLevel();
   }
 
-
-  /*
-    Iedere ronde naar Sheets sturen.
-
-    Geen promotie:
-    alleen played.
-
-    Wel promotie:
-    played + promoted + keer.
-  */
 
   if (sheetsOk) {
 
@@ -983,10 +905,8 @@ function startRun() {
   goodEl.textContent =
     "0";
 
-
   triesEl.textContent =
     "0";
-
 
   resultEl.textContent =
     "";
@@ -998,10 +918,8 @@ function startRun() {
   aEl.disabled =
     false;
 
-
   aEl.value =
     "";
-
 
   aEl.focus();
 
@@ -1010,7 +928,6 @@ function startRun() {
 
 
   if (timer) {
-
     clearInterval(timer);
   }
 
@@ -1020,7 +937,6 @@ function startRun() {
       () => {
 
         time--;
-
 
         fmtTime();
 
@@ -1037,15 +953,10 @@ function startRun() {
 
 
 /* =========================================================
-   EINDE VAN DE RONDE
+   EINDE RONDE
 ========================================================= */
 
 async function endRun() {
-
-  /*
-    Voorkomt dat endRun tweemaal
-    kan worden uitgevoerd.
-  */
 
   if (!running) {
     return;
@@ -1074,11 +985,6 @@ async function endRun() {
     getLevelIndex();
 
 
-  /*
-    24 of meer goed:
-    niveau omhoog indien mogelijk.
-  */
-
   const promoted =
     good >= PROMOTE_AT
     &&
@@ -1090,14 +996,9 @@ async function endRun() {
     levels.keer =
       oldLevel + 1;
 
-
     renderLevel();
   }
 
-
-  /*
-    Iedere afgeronde ronde opslaan.
-  */
 
   sheetStatusEl.textContent =
     sheetsOk
@@ -1253,7 +1154,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   LOKALE VOORVERTONING
+   LOKALE BACK-UP LADEN
 ========================================================= */
 
 (function initLocalPreview() {
@@ -1342,10 +1243,6 @@ startBtn.addEventListener(
       sheetStatusEl.textContent =
         "Sheets: verbonden ✅";
 
-
-      /*
-        Geldige Sheet-data lokaal bewaren.
-      */
 
       const local =
         getLocalData();
