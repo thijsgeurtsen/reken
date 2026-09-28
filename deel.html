@@ -423,24 +423,6 @@ async function sheetsGet(
    AFGERONDE DEEL-RONDE OPSLAAN
 ========================================================= */
 
-/*
-  GEEN niveau omhoog:
-
-  played=1
-  promoted=0
-
-  → alleen G wordt aangepast.
-
-
-  WEL niveau omhoog:
-
-  played=1
-  promoted=1
-  deel=nieuw niveau
-
-  → F, G en H worden aangepast.
-*/
-
 async function sheetsFinishDeel(
   klas,
   naam,
@@ -455,13 +437,9 @@ async function sheetsFinishDeel(
     + `&naam=${encodeURIComponent(naam)}`
     + `&code=${encodeURIComponent(code)}`
     + `&played=1`
-    + `&promoted=${promoted ? 1 : 0}`;
+    + `&promoted=${promoted ? 1 : 0}`
+    + `&game=deel`;
 
-
-  /*
-    Deel-niveau alleen meesturen
-    als het echt omhoog gaat.
-  */
 
   if (promoted) {
 
@@ -478,14 +456,9 @@ async function sheetsFinishDeel(
    INSTELLINGEN
 ========================================================= */
 
-const THRESHOLD =
-  24;
-
-const SECONDS =
-  120;
-
-const DOTS =
-  "...";
+const THRESHOLD = 24;
+const SECONDS = 120;
+const DOTS = "...";
 
 
 /* =========================================================
@@ -581,10 +554,6 @@ function clampLevel(n) {
 }
 
 
-/*
-  Delen kijkt ALLEEN naar levels.deel.
-*/
-
 function getLevelIndex() {
 
   return clampLevel(
@@ -592,10 +561,6 @@ function getLevelIndex() {
   );
 }
 
-
-/*
-  Alleen deel wordt aangepast.
-*/
 
 function setLevelIndex(n) {
 
@@ -609,54 +574,34 @@ function setLevelIndex(n) {
 ========================================================= */
 
 const timeEl =
-  document.getElementById(
-    "time"
-  );
+  document.getElementById("time");
 
 const goodEl =
-  document.getElementById(
-    "good"
-  );
+  document.getElementById("good");
 
 const triesEl =
-  document.getElementById(
-    "tries"
-  );
+  document.getElementById("tries");
 
 const levelEl =
-  document.getElementById(
-    "level"
-  );
+  document.getElementById("level");
 
 const sheetStatusEl =
-  document.getElementById(
-    "sheetStatus"
-  );
+  document.getElementById("sheetStatus");
 
 const qEl =
-  document.getElementById(
-    "q"
-  );
+  document.getElementById("q");
 
 const ansEl =
-  document.getElementById(
-    "ans"
-  );
+  document.getElementById("ans");
 
 const fbEl =
-  document.getElementById(
-    "fb"
-  );
+  document.getElementById("fb");
 
 const resEl =
-  document.getElementById(
-    "res"
-  );
+  document.getElementById("res");
 
 const startBtn =
-  document.getElementById(
-    "start"
-  );
+  document.getElementById("start");
 
 
 /* =========================================================
@@ -678,19 +623,11 @@ function fmt(s) {
 
   return Math.floor(s / 60)
     + ":"
-    + String(
-        s % 60
-      ).padStart(
-        2,
-        "0"
-      );
+    + String(s % 60).padStart(2,"0");
 }
 
 
-function r(
-  min,
-  max
-) {
+function r(min,max) {
 
   return Math.floor(
     Math.random()
@@ -702,10 +639,7 @@ function r(
 function pick(arr) {
 
   return arr[
-    r(
-      0,
-      arr.length - 1
-    )
+    r(0,arr.length - 1)
   ];
 }
 
@@ -759,30 +693,22 @@ function tablesForLevel(level) {
       return [3,4];
 
     case 4:
-      return [
-        2,3,4,5,10
-      ];
+      return [2,3,4,5,10];
 
     case 5:
       return [6,7];
 
     case 6:
-      return [
-        2,3,4,5,6,7,10
-      ];
+      return [2,3,4,5,6,7,10];
 
     case 7:
       return [8,9];
 
     case 8:
-      return [
-        2,3,4,5,6,7,8,9,10
-      ];
+      return [2,3,4,5,6,7,8,9,10];
 
     default:
-      return [
-        2,3,4,5,6,7,8,9,10
-      ];
+      return [2,3,4,5,6,7,8,9,10];
   }
 }
 
@@ -794,22 +720,12 @@ function tablesForLevel(level) {
 function makeQuestionForLevel(level) {
 
 
-  /* =====================================================
-     NIVEAU 10
-     STIPSOMMEN
-
-     Bijvoorbeeld:
-     56 : ... = 8
-  ===================================================== */
-
   if (
     level === 9
   ) {
 
     const tables =
-      [
-        2,3,4,5,6,7,8,9,10
-      ];
+      [2,3,4,5,6,7,8,9,10];
 
 
     const divisor =
@@ -836,14 +752,6 @@ function makeQuestionForLevel(level) {
     };
   }
 
-
-  /* =====================================================
-     NIVEAU 11
-     GROTERE DEELSOMMEN
-
-     Bijvoorbeeld:
-     450 : 5
-  ===================================================== */
 
   if (
     level === 10
@@ -876,13 +784,6 @@ function makeQuestionForLevel(level) {
     };
   }
 
-
-  /* =====================================================
-     NIVEAU 12
-     DEELSOMMEN T/M 100
-
-     Antwoord maximaal 20.
-  ===================================================== */
 
   if (
     level === 11
@@ -932,10 +833,6 @@ function makeQuestionForLevel(level) {
   }
 
 
-  /* =====================================================
-     NIVEAU 1 T/M 9
-  ===================================================== */
-
   const tables =
     tablesForLevel(
       level
@@ -974,26 +871,13 @@ function makeQuestionForLevel(level) {
    SPELSTATUS
 ========================================================= */
 
-let timer =
-  null;
-
-let t =
-  SECONDS;
-
-let good =
-  0;
-
-let tries =
-  0;
-
-let correct =
-  0;
-
-let active =
-  false;
-
-let sheetsOk =
-  false;
+let timer = null;
+let t = SECONDS;
+let good = 0;
+let tries = 0;
+let correct = 0;
+let active = false;
+let sheetsOk = false;
 
 
 /* =========================================================
@@ -1025,7 +909,7 @@ function newQ() {
 
 
 /* =========================================================
-   DEEL-NIVEAU LOKAAL OPSLAAN
+   DEEL LOKAAL OPSLAAN
 ========================================================= */
 
 function saveLocalDeelLevel() {
@@ -1059,21 +943,11 @@ async function saveFinishedRound(
   promoted
 ) {
 
-  /*
-    Als het niveau omhoog gaat,
-    het nieuwe niveau lokaal bewaren.
-  */
-
   if (promoted) {
 
     saveLocalDeelLevel();
   }
 
-
-  /*
-    Elke afgeronde ronde
-    doorgeven aan Google Sheets.
-  */
 
   if (sheetsOk) {
 
@@ -1095,7 +969,6 @@ async function saveFinishedRound(
 function start() {
 
   if (active) {
-
     return;
   }
 
@@ -1182,13 +1055,12 @@ function start() {
 
 
 /* =========================================================
-   EINDE VAN DE RONDE
+   EINDE RONDE
 ========================================================= */
 
 async function end() {
 
   if (!active) {
-
     return;
   }
 
@@ -1224,20 +1096,11 @@ async function end() {
     getLevelIndex();
 
 
-  /*
-    Bepalen of de leerling
-    omhoog gaat.
-  */
-
   const promoted =
     good >= THRESHOLD
     &&
     oldLevel < LEVELS.length - 1;
 
-
-  /*
-    Alleen DEEL verhogen.
-  */
 
   if (promoted) {
 
@@ -1249,10 +1112,6 @@ async function end() {
     renderLevel();
   }
 
-
-  /*
-    ELKE afgeronde ronde opslaan.
-  */
 
   sheetStatusEl.textContent =
     sheetsOk
@@ -1391,7 +1250,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   LOKALE VOORVERTONING
+   LOKALE BACK-UP LADEN
 ========================================================= */
 
 (function initLocalPreview() {
@@ -1501,11 +1360,6 @@ startBtn.addEventListener(
       sheetStatusEl.textContent =
         "Sheets: verbonden ✅";
 
-
-      /*
-        Geldige data ook
-        lokaal bewaren.
-      */
 
       const local =
         getLocalData();
