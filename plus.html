@@ -1,138 +1,138 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Optellen – adaptief</title>
 
   <style>
-    body{
-      font-family:system-ui,sans-serif;
-      background:#f4f6ff;
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:20px;
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f4f6ff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
-    .box{
-      background:#fff;
-      padding:2.2rem 2.4rem;
-      border-radius:1.5rem;
-      box-shadow:0 10px 30px rgba(0,0,0,.1);
-      max-width:760px;
-      width:95%;
-      text-align:center;
+    .box {
+      background: #fff;
+      padding: 2.2rem 2.4rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.1);
+      max-width: 760px;
+      width: 95%;
+      text-align: center;
     }
 
-    .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:1rem;
-      margin-bottom:1rem;
-      flex-wrap:wrap;
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
 
-    a.small{
-      color:#4f46e5;
-      text-decoration:none;
-      font-weight:800;
+    a.small {
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 800;
     }
 
-    .pill{
-      display:inline-block;
-      padding:.35rem .7rem;
-      border-radius:999px;
-      background:#eef2ff;
-      font-weight:900;
+    .pill {
+      display: inline-block;
+      padding: .35rem .7rem;
+      border-radius: 999px;
+      background: #eef2ff;
+      font-weight: 900;
     }
 
-    h1{
-      margin:.2rem 0 .2rem;
+    h1 {
+      margin: .2rem 0 .2rem;
     }
 
-    .sub{
-      color:#555;
-      margin:0 0 .75rem;
+    .sub {
+      color: #555;
+      margin: 0 0 .75rem;
     }
 
-    .row{
-      display:flex;
-      justify-content:space-between;
-      gap:.8rem;
-      flex-wrap:wrap;
-      margin:1rem 0;
-      font-weight:900;
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: .8rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+      font-weight: 900;
     }
 
-    .q{
-      font-size:3rem;
-      margin:1rem 0;
-      min-height:3rem;
+    .q {
+      font-size: 3rem;
+      margin: 1rem 0;
+      min-height: 3rem;
     }
 
-    .q small{
-      font-size:1.2rem;
-      color:#666;
-      font-weight:800;
+    .q small {
+      font-size: 1.2rem;
+      color: #666;
+      font-weight: 800;
     }
 
-    input[type="number"]{
-      font-size:1.6rem;
-      padding:.5rem .9rem;
-      width:240px;
-      text-align:center;
-      border-radius:.9rem;
-      border:2px solid #ccc;
-      outline:none;
+    input[type="number"] {
+      font-size: 1.6rem;
+      padding: .5rem .9rem;
+      width: 240px;
+      text-align: center;
+      border-radius: .9rem;
+      border: 2px solid #ccc;
+      outline: none;
     }
 
-    input:focus{
-      border-color:#4f46e5;
-      box-shadow:0 0 0 3px rgba(79,70,229,.15);
+    input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,.15);
     }
 
-    button{
-      padding:.8rem 1.3rem;
-      border:none;
-      border-radius:999px;
-      background:#4f46e5;
-      color:#fff;
-      font-weight:900;
-      cursor:pointer;
+    button {
+      padding: .8rem 1.3rem;
+      border: none;
+      border-radius: 999px;
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
     }
 
-    button:disabled{
-      background:#bbb;
-      cursor:default;
+    button:disabled {
+      background: #bbb;
+      cursor: default;
     }
 
-    .feedback{
-      min-height:1.4rem;
-      margin-top:.5rem;
-      font-weight:900;
+    .feedback {
+      min-height: 1.4rem;
+      margin-top: .5rem;
+      font-weight: 900;
     }
 
-    .good{
-      color:#16a34a;
+    .good {
+      color: #16a34a;
     }
 
-    .bad{
-      color:#dc2626;
+    .bad {
+      color: #dc2626;
     }
 
-    .result{
-      margin-top:1rem;
-      font-weight:900;
-      line-height:1.5;
+    .result {
+      margin-top: 1rem;
+      font-weight: 900;
+      line-height: 1.5;
     }
 
-    .smalltxt{
-      font-size:.85rem;
-      color:#666;
+    .smalltxt {
+      font-size: .85rem;
+      color: #666;
     }
   </style>
 </head>
@@ -150,9 +150,7 @@
     </div>
   </div>
 
-
   <h1>Optellen</h1>
-
 
   <p class="sub">
     Niveau omhoog bij
@@ -160,11 +158,9 @@
     in 2 minuten.
   </p>
 
-
   <div class="smalltxt" id="sheetStatus">
     Sheets: verbinden…
   </div>
-
 
   <div class="row">
     <div>⏱ <span id="time">2:00</span></div>
@@ -172,16 +168,13 @@
     <div>📊 <span id="tries">0</span></div>
   </div>
 
-
   <div class="pill" id="level">
     Niveau: laden…
   </div>
 
-
   <div class="q" id="q">
     Druk op start
   </div>
-
 
   <input
     id="ans"
@@ -190,9 +183,7 @@
     disabled
   >
 
-
   <div id="fb" class="feedback"></div>
-
 
   <div style="margin-top:1rem">
     <button id="start" disabled>
@@ -200,11 +191,9 @@
     </button>
   </div>
 
-
   <div id="res" class="result"></div>
 
 </div>
-
 
 <script>
 
@@ -280,11 +269,11 @@ function getLocalData() {
   return raw
     ? JSON.parse(raw)
     : {
-        levels:{
-          plus:0,
-          min:0,
-          keer:0,
-          deel:0
+        levels: {
+          plus: 0,
+          min: 0,
+          keer: 0,
+          deel: 0
         }
       };
 }
@@ -308,7 +297,7 @@ let jsonpSeq = 0;
 
 function jsonp(url) {
 
-  return new Promise((resolve,reject) => {
+  return new Promise((resolve, reject) => {
 
     const cb =
       "__cb_"
@@ -361,10 +350,7 @@ function jsonp(url) {
       + encodeURIComponent(cb);
 
 
-    document.body.appendChild(
-      script
-    );
-
+    document.body.appendChild(script);
   });
 }
 
@@ -397,6 +383,7 @@ async function sheetsFinishPlus(
   naam,
   code,
   promoted,
+  mastered,
   plusLevel
 ) {
 
@@ -407,8 +394,14 @@ async function sheetsFinishPlus(
     + `&code=${encodeURIComponent(code)}`
     + `&played=1`
     + `&promoted=${promoted ? 1 : 0}`
+    + `&mastered=${mastered ? 1 : 0}`
     + `&game=plus`;
 
+
+  /*
+    Alleen een nieuw niveau meesturen
+    wanneer er echt promotie is.
+  */
 
   if (promoted) {
 
@@ -425,11 +418,6 @@ async function sheetsFinishPlus(
    INSTELLINGEN
 ========================================================= */
 
-/*
-  Dit zijn de vier getallen die je later
-  makkelijk kunt aanpassen.
-*/
-
 const MIN_GOED =
   24;
 
@@ -439,8 +427,13 @@ const MIN_PERCENTAGE =
 const FOUT_WACHTTIJD_MS =
   700;
 
+/*
+  Na 4 fouten achter elkaar
+  stopt de ronde.
+*/
+
 const MAX_FOUTEN_OP_RIJ =
-  5;
+  4;
 
 const SECONDS =
   120;
@@ -553,10 +546,10 @@ let sheetsOk =
 
 
 let levels = {
-  plus:0,
-  min:0,
-  keer:0,
-  deel:0
+  plus: 0,
+  min: 0,
+  keer: 0,
+  deel: 0
 };
 
 
@@ -658,35 +651,38 @@ function tryLoop(
 function makeQuestionForLevel(level) {
 
   let a = 0;
-  let b = 0;
 
+
+  /* Niveau 1 */
 
   if (level === 0) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(0,10),
-          b:r(0,10)
+          a: r(0,10),
+          b: r(0,10)
         }),
         x =>
           x.a + x.b <= 10
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 2 */
 
   if (level === 1) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(0,9),
-          target:r(1,10)
+          a: r(0,9),
+          target: r(1,10)
         }),
         x =>
           x.target > x.a
@@ -696,31 +692,35 @@ function makeQuestionForLevel(level) {
       html:
         `${p.a} + ${DOTS} = ${p.target}`
         + `<br><small>Wat moet erbij?</small>`,
-      answer:p.target-p.a
+      answer: p.target - p.a
     };
   }
 
+
+  /* Niveau 3 */
 
   if (level === 2) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(10,19),
-          b:r(1,10)
+          a: r(10,19),
+          b: r(1,10)
         }),
         x =>
-          x.a+x.b >= 11
+          x.a + x.b >= 11
           &&
-          x.a+x.b <= 20
+          x.a + x.b <= 20
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 4 */
 
   if (level === 3) {
 
@@ -731,39 +731,43 @@ function makeQuestionForLevel(level) {
       html:
         `${a} + ${DOTS} = 10`
         + `<br><small>Vriendjes van 10</small>`,
-      answer:10-a
+      answer: 10 - a
     };
   }
 
+
+  /* Niveau 5 */
 
   if (level === 4) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(1,9),
-          b:r(1,9)
+          a: r(1,9),
+          b: r(1,9)
         }),
         x =>
-          x.a+x.b >= 11
+          x.a + x.b >= 11
           &&
-          x.a+x.b <= 20
+          x.a + x.b <= 20
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 6 */
 
   if (level === 5) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(0,19),
-          target:r(1,20)
+          a: r(0,19),
+          target: r(1,20)
         }),
         x =>
           x.target > x.a
@@ -773,142 +777,154 @@ function makeQuestionForLevel(level) {
       html:
         `${p.a} + ${DOTS} = ${p.target}`
         + `<br><small>Wat moet erbij?</small>`,
-      answer:p.target-p.a
+      answer: p.target - p.a
     };
   }
 
+
+  /* Niveau 7 */
 
   if (level === 6) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(1,9)*10,
-          b:r(1,9)*10
+          a: r(1,9) * 10,
+          b: r(1,9) * 10
         }),
         x =>
-          x.a+x.b <= 100
+          x.a + x.b <= 100
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 8 */
 
   if (level === 7) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(10,99),
-          b:r(1,9)*10
+          a: r(10,99),
+          b: r(1,9) * 10
         }),
         x =>
-          x.a%10 !== 0
+          x.a % 10 !== 0
           &&
-          x.a+x.b <= 100
+          x.a + x.b <= 100
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 9 */
 
   if (level === 8) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(10,99),
-          b:r(1,9)
+          a: r(10,99),
+          b: r(1,9)
         }),
         x =>
-          x.a%10 !== 0
+          x.a % 10 !== 0
           &&
-          (x.a%10)+x.b <= 9
+          (x.a % 10) + x.b <= 9
           &&
-          x.a+x.b <= 100
+          x.a + x.b <= 100
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 10 */
 
   if (level === 9) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(10,99),
-          b:r(1,9)
+          a: r(10,99),
+          b: r(1,9)
         }),
         x =>
-          x.a%10 !== 0
+          x.a % 10 !== 0
           &&
-          (x.a%10)+x.b >= 10
+          (x.a % 10) + x.b >= 10
           &&
-          x.a+x.b <= 100
+          x.a + x.b <= 100
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
+
+  /* Niveau 11 */
 
   if (level === 10) {
 
     const p =
       tryLoop(
         () => ({
-          a:r(10,99),
-          b:r(10,99)
+          a: r(10,99),
+          b: r(10,99)
         }),
         x =>
-          x.a%10 !== 0
+          x.a % 10 !== 0
           &&
-          x.b%10 !== 0
+          x.b % 10 !== 0
           &&
-          (x.a%10)+(x.b%10) <= 9
+          (x.a % 10) + (x.b % 10) <= 9
           &&
-          x.a+x.b <= 100
+          x.a + x.b <= 100
       );
 
     return {
-      html:`${p.a} + ${p.b} = ?`,
-      answer:p.a+p.b
+      html: `${p.a} + ${p.b} = ?`,
+      answer: p.a + p.b
     };
   }
 
 
+  /* Niveau 12 */
+
   const p =
     tryLoop(
       () => ({
-        a:r(10,99),
-        b:r(10,99)
+        a: r(10,99),
+        b: r(10,99)
       }),
       x =>
-        x.a%10 !== 0
+        x.a % 10 !== 0
         &&
-        x.b%10 !== 0
+        x.b % 10 !== 0
         &&
-        (x.a%10)+(x.b%10) >= 10
+        (x.a % 10) + (x.b % 10) >= 10
         &&
-        x.a+x.b <= 100
+        x.a + x.b <= 100
     );
 
 
   return {
-    html:`${p.a} + ${p.b} = ?`,
-    answer:p.a+p.b
+    html: `${p.a} + ${p.b} = ?`,
+    answer: p.a + p.b
   };
 }
 
@@ -955,7 +971,7 @@ function newQ() {
 
 
 /* =========================================================
-   LOKAAL OPSLAAN
+   LOKAAL NIVEAU OPSLAAN
 ========================================================= */
 
 function saveLocalPlusLevel() {
@@ -966,10 +982,10 @@ function saveLocalPlusLevel() {
 
   d.levels =
     d.levels || {
-      plus:0,
-      min:0,
-      keer:0,
-      deel:0
+      plus: 0,
+      min: 0,
+      keer: 0,
+      deel: 0
     };
 
 
@@ -982,12 +998,17 @@ function saveLocalPlusLevel() {
 
 
 /* =========================================================
-   RONDE OPSLAAN
+   VOLLEDIGE RONDE OPSLAAN
 ========================================================= */
 
 async function saveFinishedRound(
-  promoted
+  promoted,
+  mastered
 ) {
+
+  /*
+    Alleen bij promotie verandert het niveau.
+  */
 
   if (promoted) {
 
@@ -1002,6 +1023,7 @@ async function saveFinishedRound(
       studentId,
       studentCode,
       promoted,
+      mastered,
       levels.plus
     );
   }
@@ -1125,7 +1147,6 @@ async function end(
     timer
   );
 
-
   timer =
     null;
 
@@ -1134,7 +1155,6 @@ async function end(
     foutTimer
   );
 
-
   foutTimer =
     null;
 
@@ -1142,10 +1162,8 @@ async function end(
   antwoordGeblokkeerd =
     true;
 
-
   ansEl.disabled =
     true;
-
 
   startBtn.disabled =
     true;
@@ -1164,18 +1182,39 @@ async function end(
 
 
   /*
-    Alleen promotie bij normale afloop
-    en als beide eisen gehaald zijn.
+    Alleen een volledig uitgespeelde ronde
+    kan leiden tot promotie of afronding.
   */
 
-  const promoted =
-    reden !== "teveel_fouten"
+  const voldoetAanEisen =
+    reden === "tijd"
     &&
     good >= MIN_GOED
     &&
-    percentage >= MIN_PERCENTAGE
+    percentage >= MIN_PERCENTAGE;
+
+
+  /*
+    Normale promotie:
+    leerling zit nog niet op het hoogste niveau.
+  */
+
+  const promoted =
+    voldoetAanEisen
     &&
     oldLevel < LEVELS.length - 1;
+
+
+  /*
+    Hoogste niveau afgerond:
+    leerling stond al op niveau 12
+    en voldoet opnieuw aan 24 goed + 90%.
+  */
+
+  const mastered =
+    voldoetAanEisen
+    &&
+    oldLevel === LEVELS.length - 1;
 
 
   if (promoted) {
@@ -1185,29 +1224,48 @@ async function end(
   }
 
 
-  sheetStatusEl.textContent =
-    sheetsOk
-      ? "Sheets: spel opslaan…"
-      : "Lokaal: opslaan…";
+  /*
+    Alleen een VOLLEDIG uitgespeelde ronde
+    wordt naar Sheets gestuurd.
 
+    Een ronde die vanwege 4 fouten stopt,
+    wordt dus helemaal niet opgeslagen.
+  */
 
-  try {
-
-    await saveFinishedRound(
-      promoted
-    );
-
+  if (
+    reden === "tijd"
+  ) {
 
     sheetStatusEl.textContent =
       sheetsOk
-        ? "Sheets: opgeslagen ✅"
-        : "Lokaal: opgeslagen ✅";
+        ? "Sheets: spel opslaan…"
+        : "Lokaal: opslaan…";
 
 
-  } catch(e) {
+    try {
+
+      await saveFinishedRound(
+        promoted,
+        mastered
+      );
+
+
+      sheetStatusEl.textContent =
+        sheetsOk
+          ? "Sheets: opgeslagen ✅"
+          : "Lokaal: opgeslagen ✅";
+
+
+    } catch(e) {
+
+      sheetStatusEl.textContent =
+        "Sheets: opslaan mislukt ⚠️";
+    }
+
+  } else {
 
     sheetStatusEl.textContent =
-      "Sheets: opslaan mislukt ⚠️";
+      "Ronde afgebroken – niet opgeslagen";
   }
 
 
@@ -1222,7 +1280,14 @@ async function end(
 
     tekst +=
       ` Ronde gestopt: ${MAX_FOUTEN_OP_RIJ} fouten achter elkaar. `
-      + `Probeer opnieuw en werk iets nauwkeuriger.`;
+      + `Deze ronde is niet opgeslagen.`;
+
+  } else if (
+    mastered
+  ) {
+
+    tekst +=
+      " 🏆 Gefeliciteerd! Je hebt het hoogste niveau van Optellen behaald!";
 
   } else if (
     promoted
@@ -1305,9 +1370,9 @@ ansEl.addEventListener(
       );
 
 
-    /*
-      GOED
-    */
+    /* =====================================================
+       GOED
+    ===================================================== */
 
     if (
       antwoord === correct
@@ -1341,9 +1406,9 @@ ansEl.addEventListener(
     }
 
 
-    /*
-      FOUT
-    */
+    /* =====================================================
+       FOUT
+    ===================================================== */
 
     foutenOpRij++;
 
@@ -1365,8 +1430,8 @@ ansEl.addEventListener(
 
 
     /*
-      Bij te veel fouten achter elkaar
-      stopt de ronde.
+      Na 4 fouten achter elkaar:
+      ronde stoppen.
     */
 
     if (
@@ -1381,6 +1446,7 @@ ansEl.addEventListener(
             end(
               "teveel_fouten"
             );
+
           },
           FOUT_WACHTTIJD_MS
         );
@@ -1391,8 +1457,7 @@ ansEl.addEventListener(
 
 
     /*
-      Anders na 0,7 seconde
-      gewoon verder.
+      Anders na 0,7 seconde verder.
     */
 
     foutTimer =
@@ -1424,7 +1489,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   LOKALE DATA
+   LOKALE DATA LADEN
 ========================================================= */
 
 (function initLocal() {
@@ -1440,10 +1505,10 @@ startBtn.addEventListener(
 
 
   levels = {
-    plus:Number(d.levels?.plus)||0,
-    min:Number(d.levels?.min)||0,
-    keer:Number(d.levels?.keer)||0,
-    deel:Number(d.levels?.deel)||0
+    plus: Number(d.levels?.plus) || 0,
+    min: Number(d.levels?.min) || 0,
+    keer: Number(d.levels?.keer) || 0,
+    deel: Number(d.levels?.deel) || 0
   };
 
 
@@ -1453,7 +1518,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   GOOGLE SHEETS
+   GOOGLE SHEETS LADEN
 ========================================================= */
 
 (async function initSheets() {
@@ -1491,10 +1556,10 @@ startBtn.addEventListener(
 
 
     levels = {
-      plus:Number(res.levels.plus)||0,
-      min:Number(res.levels.min)||0,
-      keer:Number(res.levels.keer)||0,
-      deel:Number(res.levels.deel)||0
+      plus: Number(res.levels.plus) || 0,
+      min: Number(res.levels.min) || 0,
+      keer: Number(res.levels.keer) || 0,
+      deel: Number(res.levels.deel) || 0
     };
 
 
