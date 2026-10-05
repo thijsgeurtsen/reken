@@ -198,9 +198,17 @@
 
 <script>
 
+/* =========================================================
+   GOOGLE APPS SCRIPT
+========================================================= */
+
 const SHEETS_EXEC_URL =
   "https://script.google.com/macros/s/AKfycbz-13F67vdmwulyOw5QVfO9AW25louOoFU6on6MlBvbSzxjzjuR8mbEwfTHzSZaSCeyvQ/exec";
 
+
+/* =========================================================
+   OPSLAG
+========================================================= */
 
 const STORAGE_CURRENT =
   "rekenen_current_student_v1";
@@ -225,8 +233,14 @@ const studentCode =
   (localStorage.getItem(STORAGE_CODE) || "").trim();
 
 
-if (!leerling || !studentClass || !studentCode) {
-  location.href = "index.html";
+if (
+  !leerling ||
+  !studentClass ||
+  !studentCode
+) {
+
+  location.href =
+    "index.html";
 }
 
 
@@ -253,7 +267,10 @@ function dataKey() {
 function getLocalData() {
 
   const raw =
-    localStorage.getItem(dataKey());
+    localStorage.getItem(
+      dataKey()
+    );
+
 
   return raw
     ? JSON.parse(raw)
@@ -281,59 +298,84 @@ function setLocalData(d) {
    JSONP
 ========================================================= */
 
-let jsonpSeq = 0;
+let jsonpSeq =
+  0;
 
 
 function jsonp(url) {
 
-  return new Promise((resolve,reject) => {
+  return new Promise(
+    (resolve,reject) => {
 
-    const cb =
-      "__cb_"
-      + (++jsonpSeq)
-      + "_"
-      + Date.now();
+      const cb =
+        "__cb_"
+        + (++jsonpSeq)
+        + "_"
+        + Date.now();
 
-    const script =
-      document.createElement("script");
 
-    const cleanup = () => {
+      const script =
+        document.createElement(
+          "script"
+        );
 
-      try {
-        delete window[cb];
-      } catch(e) {}
 
-      script.remove();
-    };
+      const cleanup = () => {
 
-    window[cb] = data => {
-      cleanup();
-      resolve(data);
-    };
+        try {
 
-    script.onerror = () => {
-      cleanup();
-      reject(new Error("JSONP failed"));
-    };
+          delete window[cb];
 
-    const sep =
-      url.includes("?")
-        ? "&"
-        : "?";
+        } catch(e) {}
 
-    script.src =
-      url
-      + sep
-      + "callback="
-      + encodeURIComponent(cb);
 
-    document.body.appendChild(script);
-  });
+        script.remove();
+      };
+
+
+      window[cb] = data => {
+
+        cleanup();
+
+        resolve(data);
+      };
+
+
+      script.onerror = () => {
+
+        cleanup();
+
+        reject(
+          new Error(
+            "JSONP failed"
+          )
+        );
+      };
+
+
+      const sep =
+        url.includes("?")
+          ? "&"
+          : "?";
+
+
+      script.src =
+        url
+        + sep
+        + "callback="
+        + encodeURIComponent(cb);
+
+
+      document.body.appendChild(
+        script
+      );
+    }
+  );
 }
 
 
 /* =========================================================
-   SHEETS
+   SHEETS OPHALEN
 ========================================================= */
 
 async function sheetsGet(
@@ -351,11 +393,16 @@ async function sheetsGet(
 }
 
 
+/* =========================================================
+   DEEL-RONDE OPSLAAN
+========================================================= */
+
 async function sheetsFinishDeel(
   klas,
   naam,
   code,
   promoted,
+  mastered,
   deelLevel
 ) {
 
@@ -366,15 +413,27 @@ async function sheetsFinishDeel(
     + `&code=${encodeURIComponent(code)}`
     + `&played=1`
     + `&promoted=${promoted ? 1 : 0}`
+    + `&mastered=${mastered ? 1 : 0}`
     + `&game=deel`;
 
-  if (promoted) {
+
+  /*
+    Alleen een nieuw niveau meesturen
+    wanneer er echt promotie is.
+  */
+
+  if (
+    promoted
+  ) {
 
     url +=
       `&deel=${encodeURIComponent(deelLevel)}`;
   }
 
-  return await jsonp(url);
+
+  return await jsonp(
+    url
+  );
 }
 
 
@@ -382,12 +441,30 @@ async function sheetsFinishDeel(
    INSTELLINGEN
 ========================================================= */
 
-const MIN_GOED = 24;
-const MIN_PERCENTAGE = 90;
-const FOUT_WACHTTIJD_MS = 700;
-const MAX_FOUTEN_OP_RIJ = 5;
-const SECONDS = 120;
-const DOTS = "...";
+const MIN_GOED =
+  24;
+
+const MIN_PERCENTAGE =
+  90;
+
+const FOUT_WACHTTIJD_MS =
+  700;
+
+
+/*
+  Na 5 fouten achter elkaar
+  stopt de ronde.
+*/
+
+const MAX_FOUTEN_OP_RIJ =
+  5;
+
+
+const SECONDS =
+  120;
+
+const DOTS =
+  "...";
 
 
 /* =========================================================
@@ -395,18 +472,55 @@ const DOTS = "...";
 ========================================================= */
 
 const LEVELS = [
-  {name:"Niveau 1: deeltafel van 2"},
-  {name:"Niveau 2: deeltafel van 2 en 10"},
-  {name:"Niveau 3: deeltafel van 2, 5 en 10"},
-  {name:"Niveau 4: deeltafel van 3 en 4"},
-  {name:"Niveau 5: deeltafel van 2,3,4,5 en 10"},
-  {name:"Niveau 6: deeltafel van 6 en 7"},
-  {name:"Niveau 7: deeltafel van 2,3,4,5,6,7 en 10"},
-  {name:"Niveau 8: deeltafel van 8 en 9"},
-  {name:"Niveau 9: alle deeltafels"},
-  {name:"Niveau 10: stipsommen (56 : ... = 8)"},
-  {name:"Niveau 11: grotere deelsommen (450 : 5)"},
-  {name:"Niveau 12: deeltafels t/m 100 (antwoord ≤ 20)"}
+
+  {
+    name:"Niveau 1: deeltafel van 2"
+  },
+
+  {
+    name:"Niveau 2: deeltafel van 2 en 10"
+  },
+
+  {
+    name:"Niveau 3: deeltafel van 2, 5 en 10"
+  },
+
+  {
+    name:"Niveau 4: deeltafel van 3 en 4"
+  },
+
+  {
+    name:"Niveau 5: deeltafel van 2,3,4,5 en 10"
+  },
+
+  {
+    name:"Niveau 6: deeltafel van 6 en 7"
+  },
+
+  {
+    name:"Niveau 7: deeltafel van 2,3,4,5,6,7 en 10"
+  },
+
+  {
+    name:"Niveau 8: deeltafel van 8 en 9"
+  },
+
+  {
+    name:"Niveau 9: alle deeltafels"
+  },
+
+  {
+    name:"Niveau 10: stipsommen (56 : ... = 8)"
+  },
+
+  {
+    name:"Niveau 11: grotere deelsommen (450 : 5)"
+  },
+
+  {
+    name:"Niveau 12: deeltafels t/m 100 (antwoord ≤ 20)"
+  }
+
 ];
 
 
@@ -415,52 +529,89 @@ const LEVELS = [
 ========================================================= */
 
 const timeEl =
-  document.getElementById("time");
+  document.getElementById(
+    "time"
+  );
 
 const goodEl =
-  document.getElementById("good");
+  document.getElementById(
+    "good"
+  );
 
 const triesEl =
-  document.getElementById("tries");
+  document.getElementById(
+    "tries"
+  );
 
 const levelEl =
-  document.getElementById("level");
+  document.getElementById(
+    "level"
+  );
 
 const qEl =
-  document.getElementById("q");
+  document.getElementById(
+    "q"
+  );
 
 const ansEl =
-  document.getElementById("ans");
+  document.getElementById(
+    "ans"
+  );
 
 const fbEl =
-  document.getElementById("fb");
+  document.getElementById(
+    "fb"
+  );
 
 const resEl =
-  document.getElementById("res");
+  document.getElementById(
+    "res"
+  );
 
 const startBtn =
-  document.getElementById("start");
+  document.getElementById(
+    "start"
+  );
 
 const sheetStatusEl =
-  document.getElementById("sheetStatus");
+  document.getElementById(
+    "sheetStatus"
+  );
 
 
 /* =========================================================
    STATUS
 ========================================================= */
 
-let timer = null;
-let foutTimer = null;
+let timer =
+  null;
 
-let t = SECONDS;
-let good = 0;
-let tries = 0;
-let correct = 0;
+let foutTimer =
+  null;
 
-let active = false;
-let antwoordGeblokkeerd = false;
-let foutenOpRij = 0;
-let sheetsOk = false;
+let t =
+  SECONDS;
+
+let good =
+  0;
+
+let tries =
+  0;
+
+let correct =
+  0;
+
+let active =
+  false;
+
+let antwoordGeblokkeerd =
+  false;
+
+let foutenOpRij =
+  0;
+
+let sheetsOk =
+  false;
 
 
 let levels = {
@@ -480,21 +631,27 @@ function clampLevel(n) {
   return Math.max(
     0,
     Math.min(
-      Number(n)||0,
-      LEVELS.length-1
+      Number(n) || 0,
+      LEVELS.length - 1
     )
   );
 }
 
 
 function getLevelIndex() {
-  return clampLevel(levels.deel);
+
+  return clampLevel(
+    levels.deel
+  );
 }
 
 
 function setLevelIndex(n) {
+
   levels.deel =
-    clampLevel(n);
+    clampLevel(
+      n
+    );
 }
 
 
@@ -511,13 +668,23 @@ function renderLevel() {
 
 function fmt(s) {
 
-  return Math.floor(s/60)
-    + ":"
-    + String(s%60).padStart(2,"0");
+  return Math.floor(
+    s / 60
+  )
+  + ":"
+  + String(
+      s % 60
+    ).padStart(
+      2,
+      "0"
+    );
 }
 
 
-function r(min,max) {
+function r(
+  min,
+  max
+) {
 
   return Math.floor(
     Math.random()
@@ -526,10 +693,15 @@ function r(min,max) {
 }
 
 
-function pick(arr) {
+function pick(
+  arr
+) {
 
   return arr[
-    r(0,arr.length-1)
+    r(
+      0,
+      arr.length-1
+    )
   ];
 }
 
@@ -539,23 +711,40 @@ function tryLoop(
   okFn
 ) {
 
-  for (let k=0;k<500;k++) {
+  for (
+    let k = 0;
+    k < 500;
+    k++
+  ) {
 
     const v =
       makeFn();
 
-    if (okFn(v)) {
+
+    if (
+      okFn(v)
+    ) {
+
       return v;
     }
   }
+
 
   return makeFn();
 }
 
 
-function tablesForLevel(level) {
+/* =========================================================
+   TAFELS PER NIVEAU
+========================================================= */
 
-  switch(level) {
+function tablesForLevel(
+  level
+) {
+
+  switch(
+    level
+  ) {
 
     case 0:
       return [2];
@@ -591,77 +780,132 @@ function tablesForLevel(level) {
 
 
 /* =========================================================
-   SOMMEN
+   SOMMEN MAKEN
 ========================================================= */
 
-function makeQuestionForLevel(level) {
+function makeQuestionForLevel(
+  level
+) {
 
+  /* =======================================================
+     NIVEAU 10
+     STIPSOMMEN
+  ======================================================= */
 
-  if (level === 9) {
+  if (
+    level === 9
+  ) {
 
     const divisor =
-      pick([
-        2,3,4,5,6,7,8,9,10
-      ]);
+      pick(
+        [
+          2,3,4,5,6,7,8,9,10
+        ]
+      );
+
 
     const quotient =
-      r(0,10);
+      r(
+        0,
+        10
+      );
+
 
     const dividend =
-      divisor*quotient;
+      divisor * quotient;
+
 
     return {
+
       html:
         `${dividend} : ${DOTS} = ${quotient}`
         + `<br><small>Wat hoort op de puntjes?</small>`,
-      answer:divisor
+
+      answer:
+        divisor
     };
   }
 
 
-  if (level === 10) {
+  /* =======================================================
+     NIVEAU 11
+     GROTERE DEELSOMMEN
+  ======================================================= */
+
+  if (
+    level === 10
+  ) {
 
     const divisor =
-      pick([
-        2,3,4,5,6,7,8,9,10
-      ]);
+      pick(
+        [
+          2,3,4,5,6,7,8,9,10
+        ]
+      );
+
 
     const qTens =
-      pick([
-        10,20,30,40,50,
-        60,70,80,90
-      ]);
+      pick(
+        [
+          10,20,30,40,50,
+          60,70,80,90
+        ]
+      );
+
 
     const dividend =
-      divisor*qTens;
+      divisor * qTens;
+
 
     return {
+
       html:
         `${dividend} : ${divisor} = ?`,
-      answer:qTens
+
+      answer:
+        qTens
     };
   }
 
 
-  if (level === 11) {
+  /* =======================================================
+     NIVEAU 12
+     DEELSOMMEN T/M 100
+  ======================================================= */
+
+  if (
+    level === 11
+  ) {
 
     const p =
       tryLoop(
         () => {
 
           const divisor =
-            pick([
-              2,3,4,5,6,7,8,9,10
-            ]);
+            pick(
+              [
+                2,3,4,5,6,7,8,9,10
+              ]
+            );
+
 
           const quotient =
-            r(0,20);
+            r(
+              0,
+              20
+            );
+
 
           return {
-            divisor,
-            quotient,
+
+            divisor:
+              divisor,
+
+            quotient:
+              quotient,
+
             dividend:
-              divisor*quotient
+              divisor * quotient
           };
         },
 
@@ -671,30 +915,48 @@ function makeQuestionForLevel(level) {
 
 
     return {
+
       html:
         `${p.dividend} : ${p.divisor} = ?`,
+
       answer:
         p.quotient
     };
   }
 
 
+  /* =======================================================
+     NIVEAU 1 T/M 9
+  ======================================================= */
+
   const tables =
-    tablesForLevel(level);
+    tablesForLevel(
+      level
+    );
+
 
   const divisor =
-    pick(tables);
+    pick(
+      tables
+    );
+
 
   const quotient =
-    r(0,10);
+    r(
+      0,
+      10
+    );
+
 
   const dividend =
-    divisor*quotient;
+    divisor * quotient;
 
 
   return {
+
     html:
       `${dividend} : ${divisor} = ?`,
+
     answer:
       quotient
   };
@@ -707,7 +969,10 @@ function makeQuestionForLevel(level) {
 
 function newQ() {
 
-  if (!active) {
+  if (
+    !active
+  ) {
+
     return;
   }
 
@@ -717,33 +982,40 @@ function newQ() {
       getLevelIndex()
     );
 
+
   correct =
     q.answer;
+
 
   qEl.innerHTML =
     q.html;
 
+
   ansEl.value =
     "";
+
 
   ansEl.disabled =
     false;
 
+
   antwoordGeblokkeerd =
     false;
+
 
   ansEl.focus();
 }
 
 
 /* =========================================================
-   LOKAAL OPSLAAN
+   LOKAAL NIVEAU OPSLAAN
 ========================================================= */
 
 function saveLocalDeelLevel() {
 
   const d =
     getLocalData();
+
 
   d.levels =
     d.levels || {
@@ -753,32 +1025,49 @@ function saveLocalDeelLevel() {
       deel:0
     };
 
+
   d.levels.deel =
     levels.deel;
 
-  setLocalData(d);
+
+  setLocalData(
+    d
+  );
 }
 
 
 /* =========================================================
-   RONDE OPSLAAN
+   VOLLEDIGE RONDE OPSLAAN
 ========================================================= */
 
 async function saveFinishedRound(
-  promoted
+  promoted,
+  mastered
 ) {
 
-  if (promoted) {
+  /*
+    Alleen bij promotie
+    verandert het niveau.
+  */
+
+  if (
+    promoted
+  ) {
+
     saveLocalDeelLevel();
   }
 
-  if (sheetsOk) {
+
+  if (
+    sheetsOk
+  ) {
 
     await sheetsFinishDeel(
       studentClass,
       leerling,
       studentCode,
       promoted,
+      mastered,
       levels.deel
     );
   }
@@ -791,44 +1080,87 @@ async function saveFinishedRound(
 
 function start() {
 
-  if (active) {
+  if (
+    active
+  ) {
+
     return;
   }
 
 
-  clearTimeout(foutTimer);
+  clearTimeout(
+    foutTimer
+  );
 
 
-  active = true;
-  antwoordGeblokkeerd = false;
-  foutenOpRij = 0;
-
-  good = 0;
-  tries = 0;
-  t = SECONDS;
+  active =
+    true;
 
 
-  goodEl.textContent = "0";
-  triesEl.textContent = "0";
+  antwoordGeblokkeerd =
+    false;
 
-  fbEl.textContent = "";
-  fbEl.className = "feedback";
 
-  resEl.textContent = "";
+  foutenOpRij =
+    0;
 
-  ansEl.disabled = false;
-  startBtn.disabled = true;
+
+  good =
+    0;
+
+
+  tries =
+    0;
+
+
+  t =
+    SECONDS;
+
+
+  goodEl.textContent =
+    "0";
+
+
+  triesEl.textContent =
+    "0";
+
+
+  fbEl.textContent =
+    "";
+
+
+  fbEl.className =
+    "feedback";
+
+
+  resEl.textContent =
+    "";
+
+
+  ansEl.disabled =
+    false;
+
+
+  startBtn.disabled =
+    true;
 
 
   renderLevel();
+
+
   newQ();
 
 
   timeEl.textContent =
-    fmt(t);
+    fmt(
+      t
+    );
 
 
-  clearInterval(timer);
+  clearInterval(
+    timer
+  );
+
 
   timer =
     setInterval(
@@ -836,11 +1168,20 @@ function start() {
 
         t--;
 
-        timeEl.textContent =
-          fmt(t);
 
-        if (t <= 0) {
-          end("tijd");
+        timeEl.textContent =
+          fmt(
+            t
+          );
+
+
+        if (
+          t <= 0
+        ) {
+
+          end(
+            "tijd"
+          );
         }
 
       },
@@ -857,28 +1198,53 @@ async function end(
   reden = "tijd"
 ) {
 
-  if (!active) {
+  if (
+    !active
+  ) {
+
     return;
   }
 
 
-  active = false;
+  active =
+    false;
 
-  clearInterval(timer);
-  timer = null;
 
-  clearTimeout(foutTimer);
-  foutTimer = null;
+  clearInterval(
+    timer
+  );
 
-  antwoordGeblokkeerd = true;
 
-  ansEl.disabled = true;
-  startBtn.disabled = true;
+  timer =
+    null;
+
+
+  clearTimeout(
+    foutTimer
+  );
+
+
+  foutTimer =
+    null;
+
+
+  antwoordGeblokkeerd =
+    true;
+
+
+  ansEl.disabled =
+    true;
+
+
+  startBtn.disabled =
+    true;
 
 
   const percentage =
     tries > 0
-      ? Math.round((good / tries) * 100)
+      ? Math.round(
+          (good / tries) * 100
+        )
       : 0;
 
 
@@ -886,58 +1252,120 @@ async function end(
     getLevelIndex();
 
 
-  const promoted =
-    reden !== "teveel_fouten"
+  /*
+    Alleen een volledige ronde van 2 minuten
+    kan leiden tot promotie of afronding.
+  */
+
+  const voldoetAanEisen =
+    reden === "tijd"
     &&
     good >= MIN_GOED
     &&
-    percentage >= MIN_PERCENTAGE
+    percentage >= MIN_PERCENTAGE;
+
+
+  /*
+    Niveau omhoog zolang er
+    nog een volgend niveau is.
+  */
+
+  const promoted =
+    voldoetAanEisen
     &&
-    oldLevel < LEVELS.length-1;
+    oldLevel < LEVELS.length - 1;
 
 
-  if (promoted) {
+  /*
+    Hoogste niveau echt behaald.
+
+    Delen heeft 12 niveaus.
+    Niveau 12 is intern index 11.
+  */
+
+  const mastered =
+    voldoetAanEisen
+    &&
+    oldLevel === LEVELS.length - 1;
+
+
+  if (
+    promoted
+  ) {
+
     setLevelIndex(
-      oldLevel+1
+      oldLevel + 1
     );
   }
 
 
-  sheetStatusEl.textContent =
-    sheetsOk
-      ? "Sheets: spel opslaan…"
-      : "Lokaal: opslaan…";
+  /*
+    Alleen een volledige ronde opslaan.
 
+    Bij 5 fouten achter elkaar
+    wordt niets naar Sheets gestuurd.
+  */
 
-  try {
-
-    await saveFinishedRound(
-      promoted
-    );
+  if (
+    reden === "tijd"
+  ) {
 
     sheetStatusEl.textContent =
       sheetsOk
-        ? "Sheets: opgeslagen ✅"
-        : "Lokaal: opgeslagen ✅";
+        ? "Sheets: spel opslaan…"
+        : "Lokaal: opslaan…";
 
-  } catch(e) {
+
+    try {
+
+      await saveFinishedRound(
+        promoted,
+        mastered
+      );
+
+
+      sheetStatusEl.textContent =
+        sheetsOk
+          ? "Sheets: opgeslagen ✅"
+          : "Lokaal: opgeslagen ✅";
+
+
+    } catch(e) {
+
+      sheetStatusEl.textContent =
+        "Sheets: opslaan mislukt ⚠️";
+    }
+
+  } else {
 
     sheetStatusEl.textContent =
-      "Sheets: opslaan mislukt ⚠️";
+      "Ronde afgebroken – niet opgeslagen";
   }
 
 
   let tekst =
-    `${good} goed van ${tries} pogingen. ${percentage}% goed.`;
+    `${good} goed van ${tries} pogingen. `
+    + `${percentage}% goed.`;
 
 
-  if (reden === "teveel_fouten") {
+  if (
+    reden === "teveel_fouten"
+  ) {
 
     tekst +=
       ` Ronde gestopt: ${MAX_FOUTEN_OP_RIJ} fouten achter elkaar. `
-      + `Probeer opnieuw en werk iets nauwkeuriger.`;
+      + `Deze ronde is niet opgeslagen.`;
 
-  } else if (promoted) {
+  } else if (
+    mastered
+  ) {
+
+    tekst +=
+      " 🏆 Gefeliciteerd! Je hebt het hoogste niveau van Delen behaald!";
+
+  } else if (
+    promoted
+  ) {
 
     tekst +=
       " 🎉 Niveau omhoog!";
@@ -970,7 +1398,9 @@ async function end(
   resEl.textContent =
     tekst;
 
+
   renderLevel();
+
 
   startBtn.disabled =
     false;
@@ -978,7 +1408,7 @@ async function end(
 
 
 /* =========================================================
-   ANTWOORD
+   ANTWOORD CONTROLEREN
 ========================================================= */
 
 ansEl.addEventListener(
@@ -994,55 +1424,89 @@ ansEl.addEventListener(
       ||
       ansEl.value === ""
     ) {
+
       return;
     }
 
 
     tries++;
 
+
     triesEl.textContent =
-      String(tries);
+      String(
+        tries
+      );
 
 
     const antwoord =
-      Number(ansEl.value);
+      Number(
+        ansEl.value
+      );
 
 
-    if (antwoord === correct) {
+    /* =====================================================
+       GOED
+    ===================================================== */
+
+    if (
+      antwoord === correct
+    ) {
 
       good++;
 
-      foutenOpRij = 0;
+
+      foutenOpRij =
+        0;
+
 
       goodEl.textContent =
-        String(good);
+        String(
+          good
+        );
+
 
       fbEl.textContent =
         "Goed!";
 
+
       fbEl.className =
         "feedback good";
 
+
       newQ();
+
 
       return;
     }
 
 
+    /* =====================================================
+       FOUT
+    ===================================================== */
+
     foutenOpRij++;
+
 
     antwoordGeblokkeerd =
       true;
 
+
     ansEl.disabled =
       true;
+
 
     fbEl.textContent =
       `Helaas, het was ${correct}.`;
 
+
     fbEl.className =
       "feedback bad";
 
+
+    /*
+      Na 5 fouten achter elkaar
+      stopt de ronde.
+    */
 
     if (
       foutenOpRij >=
@@ -1052,25 +1516,44 @@ ansEl.addEventListener(
       foutTimer =
         setTimeout(
           () => {
-            end("teveel_fouten");
+
+            end(
+              "teveel_fouten"
+            );
+
           },
           FOUT_WACHTTIJD_MS
         );
+
 
       return;
     }
 
 
+    /*
+      Anders na 0,7 seconde
+      verder met een nieuwe som.
+    */
+
     foutTimer =
       setTimeout(
         () => {
 
-          if (!active) {
+          if (
+            !active
+          ) {
+
             return;
           }
 
-          fbEl.textContent = "";
-          fbEl.className = "feedback";
+
+          fbEl.textContent =
+            "";
+
+
+          fbEl.className =
+            "feedback";
+
 
           newQ();
 
@@ -1081,6 +1564,10 @@ ansEl.addEventListener(
 );
 
 
+/* =========================================================
+   STARTKNOP
+========================================================= */
+
 startBtn.addEventListener(
   "click",
   start
@@ -1088,33 +1575,59 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   LADEN
+   LOKALE DATA LADEN
 ========================================================= */
 
 (function initLocal() {
 
   timeEl.textContent =
-    fmt(SECONDS);
+    fmt(
+      SECONDS
+    );
+
 
   const d =
     getLocalData();
 
+
   levels = {
-    plus:Number(d.levels?.plus)||0,
-    min:Number(d.levels?.min)||0,
-    keer:Number(d.levels?.keer)||0,
-    deel:Number(d.levels?.deel)||0
+
+    plus:
+      Number(
+        d.levels?.plus
+      ) || 0,
+
+    min:
+      Number(
+        d.levels?.min
+      ) || 0,
+
+    keer:
+      Number(
+        d.levels?.keer
+      ) || 0,
+
+    deel:
+      Number(
+        d.levels?.deel
+      ) || 0
   };
+
 
   renderLevel();
 
 })();
 
 
+/* =========================================================
+   GOOGLE SHEETS LADEN
+========================================================= */
+
 (async function initSheets() {
 
   startBtn.disabled =
     true;
+
 
   sheetStatusEl.textContent =
     "Sheets: laden…";
@@ -1138,19 +1651,39 @@ startBtn.addEventListener(
       !res.levels
     ) {
 
-      throw new Error("Ongeldig antwoord");
+      throw new Error(
+        "Ongeldig antwoord"
+      );
     }
 
 
     levels = {
-      plus:Number(res.levels.plus)||0,
-      min:Number(res.levels.min)||0,
-      keer:Number(res.levels.keer)||0,
-      deel:Number(res.levels.deel)||0
+
+      plus:
+        Number(
+          res.levels.plus
+        ) || 0,
+
+      min:
+        Number(
+          res.levels.min
+        ) || 0,
+
+      keer:
+        Number(
+          res.levels.keer
+        ) || 0,
+
+      deel:
+        Number(
+          res.levels.deel
+        ) || 0
     };
 
 
-    sheetsOk = true;
+    sheetsOk =
+      true;
+
 
     sheetStatusEl.textContent =
       "Sheets: verbonden ✅";
@@ -1159,16 +1692,23 @@ startBtn.addEventListener(
     const d =
       getLocalData();
 
+
     d.levels = {
       ...d.levels,
       ...levels
     };
 
-    setLocalData(d);
+
+    setLocalData(
+      d
+    );
+
 
   } catch(e) {
 
-    sheetsOk = false;
+    sheetsOk =
+      false;
+
 
     sheetStatusEl.textContent =
       "Kon niveau niet laden uit Sheets.";
@@ -1176,6 +1716,7 @@ startBtn.addEventListener(
 
 
   renderLevel();
+
 
   startBtn.disabled =
     false;
