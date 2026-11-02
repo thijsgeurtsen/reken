@@ -195,7 +195,6 @@
 
 </div>
 
-
 <script>
 
 /* =========================================================
@@ -323,11 +322,8 @@ function jsonp(url) {
       const cleanup = () => {
 
         try {
-
           delete window[cb];
-
         } catch(e) {}
-
 
         script.remove();
       };
@@ -336,7 +332,6 @@ function jsonp(url) {
       window[cb] = data => {
 
         cleanup();
-
         resolve(data);
       };
 
@@ -417,11 +412,6 @@ async function sheetsFinishDeel(
     + `&game=deel`;
 
 
-  /*
-    Alleen een nieuw niveau meesturen
-    wanneer er echt promotie is.
-  */
-
   if (
     promoted
   ) {
@@ -431,9 +421,24 @@ async function sheetsFinishDeel(
   }
 
 
-  return await jsonp(
-    url
-  );
+  const res =
+    await jsonp(
+      url
+    );
+
+
+  if (
+    !res ||
+    res.ok !== true
+  ) {
+
+    throw new Error(
+      res?.error || "Opslaan mislukt"
+    );
+  }
+
+
+  return res;
 }
 
 
@@ -450,15 +455,8 @@ const MIN_PERCENTAGE =
 const FOUT_WACHTTIJD_MS =
   700;
 
-
-/*
-  Na 5 fouten achter elkaar
-  stopt de ronde.
-*/
-
 const MAX_FOUTEN_OP_RIJ =
   5;
-
 
 const SECONDS =
   120;
@@ -473,53 +471,29 @@ const DOTS =
 
 const LEVELS = [
 
-  {
-    name:"Niveau 1: deeltafel van 2"
-  },
+  {name:"Niveau 1: deeltafel van 2"},
 
-  {
-    name:"Niveau 2: deeltafel van 2 en 10"
-  },
+  {name:"Niveau 2: deeltafel van 2 en 10"},
 
-  {
-    name:"Niveau 3: deeltafel van 2, 5 en 10"
-  },
+  {name:"Niveau 3: deeltafel van 2, 5 en 10"},
 
-  {
-    name:"Niveau 4: deeltafel van 3 en 4"
-  },
+  {name:"Niveau 4: deeltafel van 3 en 4"},
 
-  {
-    name:"Niveau 5: deeltafel van 2,3,4,5 en 10"
-  },
+  {name:"Niveau 5: deeltafel van 2,3,4,5 en 10"},
 
-  {
-    name:"Niveau 6: deeltafel van 6 en 7"
-  },
+  {name:"Niveau 6: deeltafel van 6 en 7"},
 
-  {
-    name:"Niveau 7: deeltafel van 2,3,4,5,6,7 en 10"
-  },
+  {name:"Niveau 7: deeltafel van 2,3,4,5,6,7 en 10"},
 
-  {
-    name:"Niveau 8: deeltafel van 8 en 9"
-  },
+  {name:"Niveau 8: deeltafel van 8 en 9"},
 
-  {
-    name:"Niveau 9: alle deeltafels"
-  },
+  {name:"Niveau 9: alle deeltafels"},
 
-  {
-    name:"Niveau 10: stipsommen (56 : ... = 8)"
-  },
+  {name:"Niveau 10: stipsommen (56 : ... = 8)"},
 
-  {
-    name:"Niveau 11: grotere deelsommen (450 : 5)"
-  },
+  {name:"Niveau 11: grotere deelsommen (450 : 5)"},
 
-  {
-    name:"Niveau 12: deeltafels t/m 100 (antwoord ≤ 20)"
-  }
+  {name:"Niveau 12: deeltafels t/m 100 (antwoord ≤ 20)"}
 
 ];
 
@@ -790,6 +764,7 @@ function makeQuestionForLevel(
   /* =======================================================
      NIVEAU 10
      STIPSOMMEN
+     GEEN NULSOMMEN MEER
   ======================================================= */
 
   if (
@@ -806,7 +781,7 @@ function makeQuestionForLevel(
 
     const quotient =
       r(
-        0,
+        1,
         10
       );
 
@@ -829,7 +804,6 @@ function makeQuestionForLevel(
 
   /* =======================================================
      NIVEAU 11
-     GROTERE DEELSOMMEN
   ======================================================= */
 
   if (
@@ -870,7 +844,7 @@ function makeQuestionForLevel(
 
   /* =======================================================
      NIVEAU 12
-     DEELSOMMEN T/M 100
+     GEEN 0 ALS UITKOMST MEER
   ======================================================= */
 
   if (
@@ -891,7 +865,7 @@ function makeQuestionForLevel(
 
           const quotient =
             r(
-              0,
+              1,
               20
             );
 
@@ -927,6 +901,7 @@ function makeQuestionForLevel(
 
   /* =======================================================
      NIVEAU 1 T/M 9
+     GEEN NULSOMMEN MEER
   ======================================================= */
 
   const tables =
@@ -943,7 +918,7 @@ function makeQuestionForLevel(
 
   const quotient =
     r(
-      0,
+      1,
       10
     );
 
@@ -1008,7 +983,7 @@ function newQ() {
 
 
 /* =========================================================
-   LOKAAL NIVEAU OPSLAAN
+   LOKAAL OPSLAAN
 ========================================================= */
 
 function saveLocalDeelLevel() {
@@ -1044,11 +1019,6 @@ async function saveFinishedRound(
   promoted,
   mastered
 ) {
-
-  /*
-    Alleen bij promotie
-    verandert het niveau.
-  */
 
   if (
     promoted
@@ -1252,11 +1222,6 @@ async function end(
     getLevelIndex();
 
 
-  /*
-    Alleen een volledige ronde van 2 minuten
-    kan leiden tot promotie of afronding.
-  */
-
   const voldoetAanEisen =
     reden === "tijd"
     &&
@@ -1265,23 +1230,11 @@ async function end(
     percentage >= MIN_PERCENTAGE;
 
 
-  /*
-    Niveau omhoog zolang er
-    nog een volgend niveau is.
-  */
-
   const promoted =
     voldoetAanEisen
     &&
     oldLevel < LEVELS.length - 1;
 
-
-  /*
-    Hoogste niveau echt behaald.
-
-    Delen heeft 12 niveaus.
-    Niveau 12 is intern index 11.
-  */
 
   const mastered =
     voldoetAanEisen
@@ -1298,13 +1251,6 @@ async function end(
     );
   }
 
-
-  /*
-    Alleen een volledige ronde opslaan.
-
-    Bij 5 fouten achter elkaar
-    wordt niets naar Sheets gestuurd.
-  */
 
   if (
     reden === "tijd"
@@ -1408,7 +1354,7 @@ async function end(
 
 
 /* =========================================================
-   ANTWOORD CONTROLEREN
+   ANTWOORD
 ========================================================= */
 
 ansEl.addEventListener(
@@ -1444,10 +1390,6 @@ ansEl.addEventListener(
       );
 
 
-    /* =====================================================
-       GOED
-    ===================================================== */
-
     if (
       antwoord === correct
     ) {
@@ -1480,10 +1422,6 @@ ansEl.addEventListener(
     }
 
 
-    /* =====================================================
-       FOUT
-    ===================================================== */
-
     foutenOpRij++;
 
 
@@ -1502,11 +1440,6 @@ ansEl.addEventListener(
     fbEl.className =
       "feedback bad";
 
-
-    /*
-      Na 5 fouten achter elkaar
-      stopt de ronde.
-    */
 
     if (
       foutenOpRij >=
@@ -1529,11 +1462,6 @@ ansEl.addEventListener(
       return;
     }
 
-
-    /*
-      Anders na 0,7 seconde
-      verder met een nieuwe som.
-    */
 
     foutTimer =
       setTimeout(
