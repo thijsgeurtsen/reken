@@ -191,7 +191,6 @@
 
 </div>
 
-
 <script>
 
 /* =========================================================
@@ -267,7 +266,6 @@ function getLocalData() {
       dataKey()
     );
 
-
   return raw
     ? JSON.parse(raw)
     : {
@@ -319,11 +317,8 @@ function jsonp(url) {
       const cleanup = () => {
 
         try {
-
           delete window[cb];
-
         } catch(e) {}
-
 
         script.remove();
       };
@@ -332,7 +327,6 @@ function jsonp(url) {
       window[cb] = data => {
 
         cleanup();
-
         resolve(data);
       };
 
@@ -413,11 +407,6 @@ async function sheetsFinishKeer(
     + `&game=keer`;
 
 
-  /*
-    Alleen een nieuw niveau meesturen
-    wanneer er echt promotie is.
-  */
-
   if (
     promoted
   ) {
@@ -427,9 +416,24 @@ async function sheetsFinishKeer(
   }
 
 
-  return await jsonp(
-    url
-  );
+  const res =
+    await jsonp(
+      url
+    );
+
+
+  if (
+    !res ||
+    res.ok !== true
+  ) {
+
+    throw new Error(
+      res?.error || "Opslaan mislukt"
+    );
+  }
+
+
+  return res;
 }
 
 
@@ -446,15 +450,8 @@ const MIN_PERCENTAGE =
 const FOUT_WACHTTIJD_MS =
   700;
 
-
-/*
-  Na 5 fouten achter elkaar
-  stopt de ronde.
-*/
-
 const MAX_FOUTEN_OP_RIJ =
   5;
-
 
 const SECONDS =
   120;
@@ -719,6 +716,7 @@ function makeQuestion() {
   /* =======================================================
      NIVEAU 10
      STIPSOMMEN
+     GEEN × 0 MEER
   ======================================================= */
 
   if (
@@ -735,7 +733,7 @@ function makeQuestion() {
 
     const b =
       r(
-        0,
+        1,
         10
       );
 
@@ -960,9 +958,14 @@ function makeQuestion() {
     );
 
 
+  /*
+    BELANGRIJK:
+    1 t/m 10, dus nooit meer × 0.
+  */
+
   const getal =
     r(
-      0,
+      1,
       10
     );
 
@@ -1013,11 +1016,6 @@ async function saveFinishedRound(
   promoted,
   mastered
 ) {
-
-  /*
-    Alleen bij promotie
-    verandert het niveau.
-  */
 
   if (
     promoted
@@ -1214,11 +1212,6 @@ async function endRun(
     getLevelIndex();
 
 
-  /*
-    Alleen een volledige ronde van 2 minuten
-    kan tot promotie of afronding leiden.
-  */
-
   const voldoetAanEisen =
     reden === "tijd"
     &&
@@ -1227,22 +1220,11 @@ async function endRun(
     percentage >= MIN_PERCENTAGE;
 
 
-  /*
-    Promotie zolang er nog een volgend niveau is.
-  */
-
   const promoted =
     voldoetAanEisen
     &&
     oldLevel < LEVELS.length - 1;
 
-
-  /*
-    Hoogste niveau behaald:
-
-    Keer heeft 11 niveaus.
-    Intern is niveau 11 dus index 10.
-  */
 
   const mastered =
     voldoetAanEisen
@@ -1260,10 +1242,8 @@ async function endRun(
 
 
   /*
-    Alleen een volledige ronde opslaan.
-
-    Bij 5 fouten achter elkaar:
-    NIETS naar Sheets sturen.
+    Alleen een volledig uitgespeelde ronde
+    wordt opgeslagen.
   */
 
   if (
@@ -1409,10 +1389,6 @@ function submitAnswer() {
     );
 
 
-  /* =======================================================
-     GOED
-  ======================================================= */
-
   if (
     Number(raw) ===
     correctAnswer
@@ -1451,10 +1427,6 @@ function submitAnswer() {
   }
 
 
-  /* =======================================================
-     FOUT
-  ======================================================= */
-
   foutenOpRij++;
 
 
@@ -1471,11 +1443,6 @@ function submitAnswer() {
     false
   );
 
-
-  /*
-    Na 5 fouten achter elkaar:
-    ronde stoppen.
-  */
 
   if (
     foutenOpRij >=
@@ -1498,10 +1465,6 @@ function submitAnswer() {
     return;
   }
 
-
-  /*
-    Anders na 0,7 seconde verder.
-  */
 
   foutTimer =
     setTimeout(
