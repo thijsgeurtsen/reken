@@ -7,7 +7,6 @@
   <title>Rekenen – Menu</title>
 
   <style>
-
     body{
       font-family:system-ui,sans-serif;
       background:#f4f6ff;
@@ -59,11 +58,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(220px,1fr)
-        );
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:1rem;
       margin-top:1.2rem;
     }
@@ -114,10 +109,8 @@
       font-weight:900;
       text-decoration:none;
     }
-
   </style>
 </head>
-
 
 <body>
 
@@ -126,10 +119,7 @@
   <div class="top">
 
     <div>
-
-      <h1>
-        Rekenen – menu
-      </h1>
+      <h1>Rekenen – menu</h1>
 
       <div
         class="status"
@@ -137,12 +127,9 @@
       >
         Sheets: verbinden…
       </div>
-
     </div>
 
-
     <div>
-
       <span
         class="pill"
         id="who"
@@ -156,14 +143,12 @@
       >
         Klas: —
       </span>
-
     </div>
 
   </div>
 
 
   <div class="grid">
-
 
     <!-- OPTELLEN -->
 
@@ -311,30 +296,13 @@ const STORAGE_DATA_PREFIX =
 
 
 const studentId =
-  (
-    localStorage.getItem(
-      STORAGE_CURRENT
-    )
-    || ""
-  ).trim();
-
+  (localStorage.getItem(STORAGE_CURRENT) || "").trim();
 
 const studentClass =
-  (
-    localStorage.getItem(
-      STORAGE_CLASS
-    )
-    || ""
-  ).trim();
-
+  (localStorage.getItem(STORAGE_CLASS) || "").trim();
 
 const studentCode =
-  (
-    localStorage.getItem(
-      STORAGE_CODE
-    )
-    || ""
-  ).trim();
+  (localStorage.getItem(STORAGE_CODE) || "").trim();
 
 
 /* =========================================================
@@ -359,17 +327,13 @@ if (
 ========================================================= */
 
 document
-  .getElementById(
-    "who"
-  )
+  .getElementById("who")
   .textContent =
     `Leerling: ${studentId}`;
 
 
 document
-  .getElementById(
-    "whichClass"
-  )
+  .getElementById("whichClass")
   .textContent =
     `Klas: ${studentClass}`;
 
@@ -395,40 +359,32 @@ function getLocalData() {
     );
 
 
-  if (
-    !raw
-  ) {
+  if (!raw) {
 
     return {
-
       levels:{
         plus:0,
         min:0,
         keer:0,
         deel:0
       }
-
     };
   }
 
 
   try {
 
-    return JSON.parse(
-      raw
-    );
+    return JSON.parse(raw);
 
   } catch(e) {
 
     return {
-
       levels:{
         plus:0,
         min:0,
         keer:0,
         deel:0
       }
-
     };
   }
 }
@@ -440,9 +396,7 @@ function setLocalData(
 
   localStorage.setItem(
     dataKey(),
-    JSON.stringify(
-      data
-    )
+    JSON.stringify(data)
   );
 }
 
@@ -460,11 +414,7 @@ function jsonp(
 ) {
 
   return new Promise(
-    (
-      resolve,
-      reject
-    ) => {
-
+    (resolve,reject) => {
 
       const callbackName =
         "__cb_"
@@ -483,26 +433,24 @@ function jsonp(
         null;
 
 
-      const cleanup =
-        () => {
+      const cleanup = () => {
 
-          clearTimeout(
-            timeout
-          );
-
-
-          try {
-
-            delete window[
-              callbackName
-            ];
-
-          } catch(e) {}
+        clearTimeout(
+          timeout
+        );
 
 
-          script.remove();
+        try {
 
-        };
+          delete window[
+            callbackName
+          ];
+
+        } catch(e) {}
+
+
+        script.remove();
+      };
 
 
       window[
@@ -598,7 +546,7 @@ async function sheetsGet(
 
 
 /* =========================================================
-   NAMEN VAN DE NIVEAUS
+   OPTELLEN
 ========================================================= */
 
 const PLUS_NAMES = [
@@ -630,6 +578,10 @@ const PLUS_NAMES = [
 ];
 
 
+/* =========================================================
+   AFTREKKEN
+========================================================= */
+
 const MIN_NAMES = [
 
   "t/m 10",
@@ -659,58 +611,98 @@ const MIN_NAMES = [
 ];
 
 
+/* =========================================================
+   KEER – 19 NIVEAUS
+========================================================= */
+
 const KEER_NAMES = [
 
-  "tafel 2",
+  "tafel van 2",
 
-  "tafel 2 & 10",
+  "tafel van 10",
 
-  "2 / 5 / 10",
+  "mix 2 en 10",
 
-  "3 & 4",
+  "tafel van 5",
 
-  "2 / 3 / 4 / 5 / 10",
+  "mix 2, 5 en 10",
 
-  "6 & 7",
+  "tafel van 3",
 
-  "2 / 3 / 4 / 5 / 6 / 7 / 10",
+  "mix 2, 3, 5 en 10",
 
-  "8 & 9",
+  "tafel van 4",
 
-  "alle tafels",
+  "mix 2, 3, 4, 5 en 10",
 
-  "stipsommen",
+  "tafel van 6",
+
+  "mix 2, 3, 4, 5, 6 en 10",
+
+  "tafel van 7",
+
+  "mix 2, 3, 4, 5, 6, 7 en 10",
+
+  "tafel van 8",
+
+  "mix 2, 3, 4, 5, 6, 7, 8 en 10",
+
+  "tafel van 9",
+
+  "alle tafels 2 t/m 10",
+
+  "stipsommen met alle tafels",
 
   "grote keersommen"
 
 ];
 
 
+/* =========================================================
+   DELEN – 20 NIVEAUS
+========================================================= */
+
 const DEEL_NAMES = [
 
-  "deel 2",
+  "deeltafel van 2",
 
-  "2 & 10",
+  "deeltafel van 10",
 
-  "2 / 5 / 10",
+  "mix 2 en 10",
 
-  "3 & 4",
+  "deeltafel van 5",
 
-  "2 / 3 / 4 / 5 / 10",
+  "mix 2, 5 en 10",
 
-  "6 & 7",
+  "deeltafel van 3",
 
-  "2 / 3 / 4 / 5 / 6 / 7 / 10",
+  "mix 2, 3, 5 en 10",
 
-  "8 & 9",
+  "deeltafel van 4",
 
-  "alle deeltafels",
+  "mix 2, 3, 4, 5 en 10",
 
-  "stipsommen",
+  "deeltafel van 6",
+
+  "mix 2, 3, 4, 5, 6 en 10",
+
+  "deeltafel van 7",
+
+  "mix 2, 3, 4, 5, 6, 7 en 10",
+
+  "deeltafel van 8",
+
+  "mix 2, 3, 4, 5, 6, 7, 8 en 10",
+
+  "deeltafel van 9",
+
+  "alle deeltafels 2 t/m 10",
+
+  "stipsommen met alle deeltafels",
 
   "grotere deelsommen",
 
-  "t/m 100 (≤20)"
+  "delen t/m 100 – antwoord t/m 20"
 
 ];
 
@@ -787,36 +779,27 @@ function render(
 
 
   document
-    .getElementById(
-      "lvlPlus"
-    )
+    .getElementById("lvlPlus")
     .textContent =
       `Niveau ${plus + 1}: ${PLUS_NAMES[plus]}`;
 
 
   document
-    .getElementById(
-      "lvlMin"
-    )
+    .getElementById("lvlMin")
     .textContent =
       `Niveau ${min + 1}: ${MIN_NAMES[min]}`;
 
 
   document
-    .getElementById(
-      "lvlKeer"
-    )
+    .getElementById("lvlKeer")
     .textContent =
       `Niveau ${keer + 1}: ${KEER_NAMES[keer]}`;
 
 
   document
-    .getElementById(
-      "lvlDeel"
-    )
+    .getElementById("lvlDeel")
     .textContent =
       `Niveau ${deel + 1}: ${DEEL_NAMES[deel]}`;
-
 }
 
 
@@ -971,18 +954,11 @@ async function loadFromSheets() {
 
   } catch(e) {
 
-
-    /*
-      Sheets niet bereikbaar:
-      lokaal niveau blijft zichtbaar.
-    */
-
     renderFromLocalFirst();
 
 
     status.textContent =
       "Sheets: niet bereikbaar – lokale niveaus gebruikt.";
-
   }
 }
 
