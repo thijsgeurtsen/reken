@@ -3,154 +3,255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Optellen – adaptief</title>
 
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f4f6ff;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+    body{
+      font-family:system-ui,sans-serif;
+      background:#f4f6ff;
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
     }
 
-    .box {
-      background: #fff;
-      padding: 2.2rem 2.4rem;
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,.1);
-      max-width: 760px;
-      width: 95%;
-      text-align: center;
+    .box{
+      background:#fff;
+      padding:2.2rem 2.4rem;
+      border-radius:1.5rem;
+      box-shadow:0 10px 30px rgba(0,0,0,.1);
+      max-width:760px;
+      width:95%;
+      text-align:center;
     }
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      margin-bottom:1rem;
+      flex-wrap:wrap;
     }
 
-    a.small {
-      color: #4f46e5;
-      text-decoration: none;
-      font-weight: 800;
+    a.small{
+      color:#4f46e5;
+      text-decoration:none;
+      font-weight:800;
     }
 
-    .pill {
-      display: inline-block;
-      padding: .35rem .7rem;
-      border-radius: 999px;
-      background: #eef2ff;
-      font-weight: 900;
+    .pill{
+      display:inline-block;
+      padding:.35rem .7rem;
+      border-radius:999px;
+      background:#eef2ff;
+      font-weight:900;
     }
 
-    h1 {
-      margin: .2rem 0 .2rem;
+    h1{
+      margin:.2rem 0 .2rem;
     }
 
-    .sub {
-      color: #555;
-      margin: 0 0 .75rem;
+    .sub{
+      color:#555;
+      margin:0 0 .75rem;
     }
 
-    .row {
-      display: flex;
-      justify-content: space-between;
-      gap: .8rem;
-      flex-wrap: wrap;
-      margin: 1rem 0;
-      font-weight: 900;
+    .row{
+      display:flex;
+      justify-content:space-between;
+      gap:.8rem;
+      flex-wrap:wrap;
+      margin:1rem 0;
+      font-weight:900;
     }
 
-    .q {
-      font-size: 3rem;
-      margin: 1rem 0;
-      min-height: 3rem;
+    .q{
+      font-size:3rem;
+      margin:1rem 0;
+      min-height:3rem;
     }
 
-    .q small {
-      font-size: 1.2rem;
-      color: #666;
-      font-weight: 800;
+    .q small{
+      font-size:1.2rem;
+      color:#666;
+      font-weight:800;
     }
 
-    input[type="number"] {
-      font-size: 1.6rem;
-      padding: .5rem .9rem;
-      width: 240px;
-      text-align: center;
-      border-radius: .9rem;
-      border: 2px solid #ccc;
-      outline: none;
+    #ans{
+      font-size:1.6rem;
+      padding:.5rem .9rem;
+      width:240px;
+      text-align:center;
+      border-radius:.9rem;
+      border:2px solid #ccc;
+      outline:none;
     }
 
-    input:focus {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+    #ans:focus{
+      border-color:#4f46e5;
+      box-shadow:0 0 0 3px rgba(79,70,229,.15);
     }
 
-    button {
-      padding: .8rem 1.3rem;
-      border: none;
-      border-radius: 999px;
-      background: #4f46e5;
-      color: #fff;
-      font-weight: 900;
-      cursor: pointer;
+    .hidden{
+      display:none !important;
     }
 
-    button:disabled {
-      background: #bbb;
-      cursor: default;
+    /* =====================================================
+       SPLITSSCHEMA
+    ===================================================== */
+
+    .split-wrap{
+      width:270px;
+      height:220px;
+      position:relative;
+      margin:0 auto;
     }
 
-    .feedback {
-      min-height: 1.4rem;
-      margin-top: .5rem;
-      font-weight: 900;
+    .split-lines{
+      position:absolute;
+      left:0;
+      top:0;
+      width:270px;
+      height:220px;
+      z-index:1;
     }
 
-    .good {
-      color: #16a34a;
+    .split-box{
+      width:74px;
+      height:64px;
+      border:3px solid #222;
+      background:#fff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:2rem;
+      font-weight:800;
+      position:absolute;
+      box-sizing:border-box;
+      z-index:2;
     }
 
-    .bad {
-      color: #dc2626;
+    .split-top{
+      left:98px;
+      top:5px;
     }
 
-    .result {
-      margin-top: 1rem;
-      font-weight: 900;
-      line-height: 1.5;
+    .split-left{
+      left:35px;
+      top:145px;
     }
 
-    .smalltxt {
-      font-size: .85rem;
-      color: #666;
+    .split-right{
+      left:161px;
+      top:145px;
+    }
+
+    .split-input{
+      width:74px;
+      height:64px;
+      border:3px solid #4f46e5;
+      background:#fff;
+      font-size:2rem;
+      font-weight:800;
+      text-align:center;
+      position:absolute;
+      left:161px;
+      top:145px;
+      box-sizing:border-box;
+      z-index:3;
+      outline:none;
+      padding:0;
+    }
+
+    .split-input:focus{
+      box-shadow:0 0 0 4px rgba(79,70,229,.15);
+    }
+
+    button{
+      padding:.8rem 1.3rem;
+      border:none;
+      border-radius:999px;
+      background:#4f46e5;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    button:disabled{
+      background:#bbb;
+      cursor:default;
+    }
+
+    .feedback{
+      min-height:1.4rem;
+      margin-top:.5rem;
+      font-weight:900;
+    }
+
+    .good{
+      color:#16a34a;
+    }
+
+    .bad{
+      color:#dc2626;
+    }
+
+    .result{
+      margin-top:1rem;
+      font-weight:900;
+      line-height:1.5;
+    }
+
+    .smalltxt{
+      font-size:.85rem;
+      color:#666;
     }
   </style>
 </head>
+
 
 <body>
 
 <div class="box">
 
   <div class="top">
-    <a class="small" href="menu.html">← Menu</a>
+
+    <a
+      class="small"
+      href="menu.html"
+    >
+      ← Menu
+    </a>
 
     <div>
-      <span class="pill" id="who">—</span>
-      <span class="pill" id="whichClass">—</span>
+
+      <span
+        class="pill"
+        id="who"
+      >
+        —
+      </span>
+
+      <span
+        class="pill"
+        id="whichClass"
+      >
+        —
+      </span>
+
     </div>
+
   </div>
 
-  <h1>Optellen</h1>
+
+  <h1>
+    Optellen
+  </h1>
+
 
   <p class="sub">
     Niveau omhoog bij
@@ -158,42 +259,82 @@
     in 2 minuten.
   </p>
 
-  <div class="smalltxt" id="sheetStatus">
+
+  <div
+    class="smalltxt"
+    id="sheetStatus"
+  >
     Sheets: verbinden…
   </div>
 
+
   <div class="row">
-    <div>⏱ <span id="time">2:00</span></div>
-    <div>✅ <span id="good">0</span></div>
-    <div>📊 <span id="tries">0</span></div>
+
+    <div>
+      ⏱ <span id="time">2:00</span>
+    </div>
+
+    <div>
+      ✅ <span id="good">0</span>
+    </div>
+
+    <div>
+      📊 <span id="tries">0</span>
+    </div>
+
   </div>
 
-  <div class="pill" id="level">
+
+  <div
+    class="pill"
+    id="level"
+  >
     Niveau: laden…
   </div>
 
-  <div class="q" id="q">
+
+  <div
+    class="q"
+    id="q"
+  >
     Druk op start
   </div>
+
 
   <input
     id="ans"
     type="number"
+    inputmode="numeric"
     placeholder="antwoord"
     disabled
   >
 
-  <div id="fb" class="feedback"></div>
+
+  <div
+    id="fb"
+    class="feedback"
+  ></div>
+
 
   <div style="margin-top:1rem">
-    <button id="start" disabled>
+
+    <button
+      id="start"
+      disabled
+    >
       Start 2-minutentest
     </button>
+
   </div>
 
-  <div id="res" class="result"></div>
+
+  <div
+    id="res"
+    class="result"
+  ></div>
 
 </div>
+
 
 <script>
 
@@ -237,15 +378,22 @@ if (
   !studentClass ||
   !studentCode
 ) {
-  location.href = "index.html";
+
+  location.href =
+    "index.html";
 }
 
 
-document.getElementById("who").textContent =
-  `Leerling: ${studentId}`;
+document
+  .getElementById("who")
+  .textContent =
+    `Leerling: ${studentId}`;
 
-document.getElementById("whichClass").textContent =
-  `Klas: ${studentClass}`;
+
+document
+  .getElementById("whichClass")
+  .textContent =
+    `Klas: ${studentClass}`;
 
 
 /* =========================================================
@@ -264,22 +412,45 @@ function dataKey() {
 function getLocalData() {
 
   const raw =
-    localStorage.getItem(dataKey());
+    localStorage.getItem(
+      dataKey()
+    );
 
-  return raw
-    ? JSON.parse(raw)
-    : {
-        levels: {
-          plus: 0,
-          min: 0,
-          keer: 0,
-          deel: 0
-        }
-      };
+
+  if (!raw) {
+
+    return {
+      levels:{
+        plus:0,
+        min:0,
+        keer:0,
+        deel:0
+      }
+    };
+  }
+
+
+  try {
+
+    return JSON.parse(raw);
+
+  } catch(e) {
+
+    return {
+      levels:{
+        plus:0,
+        min:0,
+        keer:0,
+        deel:0
+      }
+    };
+  }
 }
 
 
-function setLocalData(d) {
+function setLocalData(
+  d
+) {
 
   localStorage.setItem(
     dataKey(),
@@ -292,66 +463,87 @@ function setLocalData(d) {
    JSONP
 ========================================================= */
 
-let jsonpSeq = 0;
+let jsonpSeq =
+  0;
 
 
-function jsonp(url) {
+function jsonp(
+  url
+) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise(
+    (resolve,reject) => {
 
-    const cb =
-      "__cb_"
-      + (++jsonpSeq)
-      + "_"
-      + Date.now();
-
-
-    const script =
-      document.createElement("script");
-
-
-    const cleanup = () => {
-
-      try {
-        delete window[cb];
-      } catch(e) {}
-
-      script.remove();
-    };
+      const cb =
+        "__cb_"
+        + (++jsonpSeq)
+        + "_"
+        + Date.now();
 
 
-    window[cb] = data => {
+      const script =
+        document.createElement(
+          "script"
+        );
 
-      cleanup();
-      resolve(data);
-    };
+
+      const cleanup =
+        () => {
+
+          try {
+
+            delete window[cb];
+
+          } catch(e) {}
 
 
-    script.onerror = () => {
+          script.remove();
+        };
 
-      cleanup();
 
-      reject(
-        new Error("JSONP failed")
+      window[cb] =
+        data => {
+
+          cleanup();
+
+          resolve(
+            data
+          );
+        };
+
+
+      script.onerror =
+        () => {
+
+          cleanup();
+
+          reject(
+            new Error(
+              "JSONP failed"
+            )
+          );
+        };
+
+
+      const sep =
+        url.includes("?")
+          ? "&"
+          : "?";
+
+
+      script.src =
+        url
+        + sep
+        + "callback="
+        + encodeURIComponent(cb);
+
+
+      document.body.appendChild(
+        script
       );
-    };
 
-
-    const sep =
-      url.includes("?")
-        ? "&"
-        : "?";
-
-
-    script.src =
-      url
-      + sep
-      + "callback="
-      + encodeURIComponent(cb);
-
-
-    document.body.appendChild(script);
-  });
+    }
+  );
 }
 
 
@@ -399,18 +591,38 @@ async function sheetsFinishPlus(
 
 
   /*
-    Alleen een nieuw niveau meesturen
-    wanneer er echt promotie is.
+    Alleen bij niveau omhoog
+    wordt de nieuwe Plus-waarde meegestuurd.
   */
 
-  if (promoted) {
+  if (
+    promoted
+  ) {
 
     url +=
       `&plus=${encodeURIComponent(plusLevel)}`;
   }
 
 
-  return await jsonp(url);
+  const res =
+    await jsonp(
+      url
+    );
+
+
+  if (
+    !res ||
+    res.ok !== true
+  ) {
+
+    throw new Error(
+      res?.error ||
+      "Opslaan mislukt"
+    );
+  }
+
+
+  return res;
 }
 
 
@@ -427,50 +639,89 @@ const MIN_PERCENTAGE =
 const FOUT_WACHTTIJD_MS =
   700;
 
-/*
-  Na 4 fouten achter elkaar
-  stopt de ronde.
-*/
-
 const MAX_FOUTEN_OP_RIJ =
-  4;
+  5;
 
 const SECONDS =
   120;
 
 const DOTS =
-  "...";
+  "…";
 
 
 /* =========================================================
-   NIVEAUS
+   PLUS-NIVEAUS
+
+   13 zichtbare niveaus
+   interne index: 0 t/m 12
 ========================================================= */
 
 const LEVELS = [
 
-  {name:"Niveau 1: optellen t/m 10"},
+  {
+    name:
+      "Niveau 1: optellen t/m 10"
+  },
 
-  {name:"Niveau 2: stipsommen t/m 10"},
+  {
+    name:
+      "Niveau 2: splitsingen t/m 10"
+  },
 
-  {name:"Niveau 3: tussen 10 en 20 (14 + 3)"},
+  {
+    name:
+      "Niveau 3: stipsommen t/m 10"
+  },
 
-  {name:"Niveau 4: stipsommen (vriendjes van 10)"},
+  {
+    name:
+      "Niveau 4: tussen 10 en 20 (14 + 3)"
+  },
 
-  {name:"Niveau 5: t/m 20 met overschrijding (8 + 5)"},
+  {
+    name:
+      "Niveau 5: vriendjes van 10"
+  },
 
-  {name:"Niveau 6: stipsommen t/m 20"},
+  {
+    name:
+      "Niveau 6: t/m 20 met overschrijding (8 + 5)"
+  },
 
-  {name:"Niveau 7: t/m 100 – tientallen (40 + 20)"},
+  {
+    name:
+      "Niveau 7: stipsommen t/m 20"
+  },
 
-  {name:"Niveau 8: tientallen bij tiental+eenheid (43 + 20)"},
+  {
+    name:
+      "Niveau 8: t/m 100 – tientallen (40 + 20)"
+  },
 
-  {name:"Niveau 9: eenheden zonder overschrijding (43 + 3)"},
+  {
+    name:
+      "Niveau 9: tientallen bij tiental+eenheid (43 + 20)"
+  },
 
-  {name:"Niveau 10: eenheden met overschrijding (58 + 6)"},
+  {
+    name:
+      "Niveau 10: eenheden zonder overschrijding (43 + 3)"
+  },
 
-  {name:"Niveau 11: tient+eenh zonder overschrijding (42 + 14)"},
+  {
+    name:
+      "Niveau 11: eenheden met overschrijding (58 + 6)"
+  },
 
-  {name:"Niveau 12: tient+eenh met overschrijding (48 + 24)"}
+  {
+    name:
+      "Niveau 12: tiental+eenheid zonder overschrijding (42 + 14)"
+  },
+
+  {
+    name:
+      "Niveau 13: tiental+eenheid met overschrijding (48 + 24)"
+  }
 
 ];
 
@@ -480,34 +731,54 @@ const LEVELS = [
 ========================================================= */
 
 const timeEl =
-  document.getElementById("time");
+  document.getElementById(
+    "time"
+  );
 
 const goodEl =
-  document.getElementById("good");
+  document.getElementById(
+    "good"
+  );
 
 const triesEl =
-  document.getElementById("tries");
+  document.getElementById(
+    "tries"
+  );
 
 const levelEl =
-  document.getElementById("level");
+  document.getElementById(
+    "level"
+  );
 
 const qEl =
-  document.getElementById("q");
+  document.getElementById(
+    "q"
+  );
 
 const ansEl =
-  document.getElementById("ans");
+  document.getElementById(
+    "ans"
+  );
 
 const fbEl =
-  document.getElementById("fb");
+  document.getElementById(
+    "fb"
+  );
 
 const resEl =
-  document.getElementById("res");
+  document.getElementById(
+    "res"
+  );
 
 const startBtn =
-  document.getElementById("start");
+  document.getElementById(
+    "start"
+  );
 
 const sheetStatusEl =
-  document.getElementById("sheetStatus");
+  document.getElementById(
+    "sheetStatus"
+  );
 
 
 /* =========================================================
@@ -546,10 +817,10 @@ let sheetsOk =
 
 
 let levels = {
-  plus: 0,
-  min: 0,
-  keer: 0,
-  deel: 0
+  plus:0,
+  min:0,
+  keer:0,
+  deel:0
 };
 
 
@@ -557,7 +828,9 @@ let levels = {
    NIVEAU
 ========================================================= */
 
-function clampLevel(n) {
+function clampLevel(
+  n
+) {
 
   return Math.min(
     Math.max(
@@ -582,8 +855,9 @@ function renderLevel() {
   const i =
     getLevelIndex();
 
+
   levelEl.textContent =
-    `Niveau: ${LEVELS[i].name}`;
+    LEVELS[i].name;
 }
 
 
@@ -591,16 +865,20 @@ function renderLevel() {
    HULPFUNCTIES
 ========================================================= */
 
-function fmt(s) {
+function fmt(
+  s
+) {
 
-  return Math.floor(s / 60)
-    + ":"
-    + String(
-        s % 60
-      ).padStart(
-        2,
-        "0"
-      );
+  return Math.floor(
+    s / 60
+  )
+  + ":"
+  + String(
+      s % 60
+    ).padStart(
+      2,
+      "0"
+    );
 }
 
 
@@ -645,67 +923,199 @@ function tryLoop(
 
 
 /* =========================================================
+   SPLITSSCHEMA MAKEN
+========================================================= */
+
+function makeSplitHtml(
+  whole,
+  left
+) {
+
+  return `
+    <div class="split-wrap">
+
+      <svg
+        class="split-lines"
+        viewBox="0 0 270 220"
+        aria-hidden="true"
+      >
+        <line
+          x1="135"
+          y1="68"
+          x2="72"
+          y2="145"
+          stroke="#222"
+          stroke-width="3"
+        />
+
+        <line
+          x1="135"
+          y1="68"
+          x2="198"
+          y2="145"
+          stroke="#222"
+          stroke-width="3"
+        />
+      </svg>
+
+      <div
+        class="split-box split-top"
+      >
+        ${whole}
+      </div>
+
+      <div
+        class="split-box split-left"
+      >
+        ${left}
+      </div>
+
+      <input
+        id="splitAns"
+        class="split-input"
+        type="number"
+        inputmode="numeric"
+        aria-label="Ontbrekend deel"
+        autocomplete="off"
+      >
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
    SOMMEN MAKEN
 ========================================================= */
 
-function makeQuestionForLevel(level) {
+function makeQuestionForLevel(
+  level
+) {
 
-  let a = 0;
+  let a =
+    0;
 
 
-  /* Niveau 1 */
+  /* =======================================================
+     NIVEAU 1
+     OPTELLEN T/M 10
+  ======================================================= */
 
-  if (level === 0) {
+  if (
+    level === 0
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(0,10),
-          b: r(0,10)
+          a:r(0,10),
+          b:r(0,10)
         }),
         x =>
           x.a + x.b <= 10
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 2 */
+  /* =======================================================
+     NIVEAU 2
+     SPLITSINGEN T/M 10
 
-  if (level === 1) {
+          6
+         / \
+        3   □
+
+     Altijd:
+     - geheel boven
+     - gegeven deel linksonder
+     - antwoord rechtsonder
+  ======================================================= */
+
+  if (
+    level === 1
+  ) {
+
+    const whole =
+      r(
+        2,
+        10
+      );
+
+
+    const left =
+      r(
+        0,
+        whole
+      );
+
+
+    return {
+      type:"split",
+      html:
+        makeSplitHtml(
+          whole,
+          left
+        ),
+      answer:
+        whole - left
+    };
+  }
+
+
+  /* =======================================================
+     NIVEAU 3
+     STIPSOMMEN T/M 10
+  ======================================================= */
+
+  if (
+    level === 2
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(0,9),
-          target: r(1,10)
+          a:r(0,9),
+          target:r(1,10)
         }),
         x =>
           x.target > x.a
       );
 
+
     return {
+      type:"normal",
       html:
         `${p.a} + ${DOTS} = ${p.target}`
         + `<br><small>Wat moet erbij?</small>`,
-      answer: p.target - p.a
+      answer:
+        p.target - p.a
     };
   }
 
 
-  /* Niveau 3 */
+  /* =======================================================
+     NIVEAU 4
+     10 T/M 20
+  ======================================================= */
 
-  if (level === 2) {
+  if (
+    level === 3
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(10,19),
-          b: r(1,10)
+          a:r(10,19),
+          b:r(1,10)
         }),
         x =>
           x.a + x.b >= 11
@@ -713,38 +1123,58 @@ function makeQuestionForLevel(level) {
           x.a + x.b <= 20
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 4 */
+  /* =======================================================
+     NIVEAU 5
+     VRIENDJES VAN 10
+  ======================================================= */
 
-  if (level === 3) {
+  if (
+    level === 4
+  ) {
 
     a =
-      r(1,9);
+      r(
+        1,
+        9
+      );
+
 
     return {
+      type:"normal",
       html:
         `${a} + ${DOTS} = 10`
         + `<br><small>Vriendjes van 10</small>`,
-      answer: 10 - a
+      answer:
+        10 - a
     };
   }
 
 
-  /* Niveau 5 */
+  /* =======================================================
+     NIVEAU 6
+     T/M 20 MET OVERSCHRIJDING
+  ======================================================= */
 
-  if (level === 4) {
+  if (
+    level === 5
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(1,9),
-          b: r(1,9)
+          a:r(1,9),
+          b:r(1,9)
         }),
         x =>
           x.a + x.b >= 11
@@ -752,66 +1182,92 @@ function makeQuestionForLevel(level) {
           x.a + x.b <= 20
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 6 */
+  /* =======================================================
+     NIVEAU 7
+     STIPSOMMEN T/M 20
+  ======================================================= */
 
-  if (level === 5) {
+  if (
+    level === 6
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(0,19),
-          target: r(1,20)
+          a:r(0,19),
+          target:r(1,20)
         }),
         x =>
           x.target > x.a
       );
 
+
     return {
+      type:"normal",
       html:
         `${p.a} + ${DOTS} = ${p.target}`
         + `<br><small>Wat moet erbij?</small>`,
-      answer: p.target - p.a
+      answer:
+        p.target - p.a
     };
   }
 
 
-  /* Niveau 7 */
+  /* =======================================================
+     NIVEAU 8
+     TIENTALLEN T/M 100
+  ======================================================= */
 
-  if (level === 6) {
+  if (
+    level === 7
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(1,9) * 10,
-          b: r(1,9) * 10
+          a:r(1,9) * 10,
+          b:r(1,9) * 10
         }),
         x =>
           x.a + x.b <= 100
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 8 */
+  /* =======================================================
+     NIVEAU 9
+     43 + 20
+  ======================================================= */
 
-  if (level === 7) {
+  if (
+    level === 8
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(10,99),
-          b: r(1,9) * 10
+          a:r(10,99),
+          b:r(1,9) * 10
         }),
         x =>
           x.a % 10 !== 0
@@ -819,22 +1275,31 @@ function makeQuestionForLevel(level) {
           x.a + x.b <= 100
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 9 */
+  /* =======================================================
+     NIVEAU 10
+     43 + 3
+  ======================================================= */
 
-  if (level === 8) {
+  if (
+    level === 9
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(10,99),
-          b: r(1,9)
+          a:r(10,99),
+          b:r(1,9)
         }),
         x =>
           x.a % 10 !== 0
@@ -844,22 +1309,31 @@ function makeQuestionForLevel(level) {
           x.a + x.b <= 100
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 10 */
+  /* =======================================================
+     NIVEAU 11
+     58 + 6
+  ======================================================= */
 
-  if (level === 9) {
+  if (
+    level === 10
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(10,99),
-          b: r(1,9)
+          a:r(10,99),
+          b:r(1,9)
         }),
         x =>
           x.a % 10 !== 0
@@ -869,22 +1343,31 @@ function makeQuestionForLevel(level) {
           x.a + x.b <= 100
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 11 */
+  /* =======================================================
+     NIVEAU 12
+     42 + 14
+  ======================================================= */
 
-  if (level === 10) {
+  if (
+    level === 11
+  ) {
 
     const p =
       tryLoop(
         () => ({
-          a: r(10,99),
-          b: r(10,99)
+          a:r(10,99),
+          b:r(10,99)
         }),
         x =>
           x.a % 10 !== 0
@@ -896,20 +1379,27 @@ function makeQuestionForLevel(level) {
           x.a + x.b <= 100
       );
 
+
     return {
-      html: `${p.a} + ${p.b} = ?`,
-      answer: p.a + p.b
+      type:"normal",
+      html:
+        `${p.a} + ${p.b} = ?`,
+      answer:
+        p.a + p.b
     };
   }
 
 
-  /* Niveau 12 */
+  /* =======================================================
+     NIVEAU 13
+     48 + 24
+  ======================================================= */
 
   const p =
     tryLoop(
       () => ({
-        a: r(10,99),
-        b: r(10,99)
+        a:r(10,99),
+        b:r(10,99)
       }),
       x =>
         x.a % 10 !== 0
@@ -923,9 +1413,32 @@ function makeQuestionForLevel(level) {
 
 
   return {
-    html: `${p.a} + ${p.b} = ?`,
-    answer: p.a + p.b
+    type:"normal",
+    html:
+      `${p.a} + ${p.b} = ?`,
+    answer:
+      p.a + p.b
   };
+}
+
+
+/* =========================================================
+   HUIDIG INVULVAK
+========================================================= */
+
+function getCurrentInput() {
+
+  if (
+    getLevelIndex() === 1
+  ) {
+
+    return document.getElementById(
+      "splitAns"
+    );
+  }
+
+
+  return ansEl;
 }
 
 
@@ -935,7 +1448,10 @@ function makeQuestionForLevel(level) {
 
 function newQ() {
 
-  if (!active) {
+  if (
+    !active
+  ) {
+
     return;
   }
 
@@ -954,24 +1470,80 @@ function newQ() {
     q.html;
 
 
-  ansEl.value =
+  fbEl.textContent =
     "";
 
-
-  ansEl.disabled =
-    false;
-
-
-  antwoordGeblokkeerd =
-    false;
+  fbEl.className =
+    "feedback";
 
 
-  ansEl.focus();
+  /*
+    Bij splitsingen zit het invulvak
+    in het splitschema zelf.
+  */
+
+  if (
+    q.type === "split"
+  ) {
+
+    ansEl.classList.add(
+      "hidden"
+    );
+
+
+    ansEl.disabled =
+      true;
+
+
+    const splitInput =
+      document.getElementById(
+        "splitAns"
+      );
+
+
+    splitInput.disabled =
+      false;
+
+
+    splitInput.addEventListener(
+      "keydown",
+      handleKeyDown
+    );
+
+
+    antwoordGeblokkeerd =
+      false;
+
+
+    splitInput.focus();
+
+
+  } else {
+
+    ansEl.classList.remove(
+      "hidden"
+    );
+
+
+    ansEl.value =
+      "";
+
+
+    ansEl.disabled =
+      false;
+
+
+    antwoordGeblokkeerd =
+      false;
+
+
+    ansEl.focus();
+  }
 }
 
 
 /* =========================================================
-   LOKAAL NIVEAU OPSLAAN
+   LOKAAL OPSLAAN
 ========================================================= */
 
 function saveLocalPlusLevel() {
@@ -982,10 +1554,10 @@ function saveLocalPlusLevel() {
 
   d.levels =
     d.levels || {
-      plus: 0,
-      min: 0,
-      keer: 0,
-      deel: 0
+      plus:0,
+      min:0,
+      keer:0,
+      deel:0
     };
 
 
@@ -993,7 +1565,9 @@ function saveLocalPlusLevel() {
     levels.plus;
 
 
-  setLocalData(d);
+  setLocalData(
+    d
+  );
 }
 
 
@@ -1006,17 +1580,17 @@ async function saveFinishedRound(
   mastered
 ) {
 
-  /*
-    Alleen bij promotie verandert het niveau.
-  */
-
-  if (promoted) {
+  if (
+    promoted
+  ) {
 
     saveLocalPlusLevel();
   }
 
 
-  if (sheetsOk) {
+  if (
+    sheetsOk
+  ) {
 
     await sheetsFinishPlus(
       studentClass,
@@ -1036,7 +1610,10 @@ async function saveFinishedRound(
 
 function start() {
 
-  if (active) {
+  if (
+    active
+  ) {
+
     return;
   }
 
@@ -1049,17 +1626,22 @@ function start() {
   active =
     true;
 
+
   antwoordGeblokkeerd =
     false;
+
 
   foutenOpRij =
     0;
 
+
   good =
     0;
 
+
   tries =
     0;
+
 
   t =
     SECONDS;
@@ -1068,27 +1650,29 @@ function start() {
   goodEl.textContent =
     "0";
 
+
   triesEl.textContent =
     "0";
+
 
   fbEl.textContent =
     "";
 
+
   fbEl.className =
     "feedback";
+
 
   resEl.textContent =
     "";
 
-
-  ansEl.disabled =
-    false;
 
   startBtn.disabled =
     true;
 
 
   renderLevel();
+
 
   newQ();
 
@@ -1113,7 +1697,9 @@ function start() {
           fmt(t);
 
 
-        if (t <= 0) {
+        if (
+          t <= 0
+        ) {
 
           end(
             "tijd"
@@ -1134,7 +1720,10 @@ async function end(
   reden = "tijd"
 ) {
 
-  if (!active) {
+  if (
+    !active
+  ) {
+
     return;
   }
 
@@ -1147,6 +1736,7 @@ async function end(
     timer
   );
 
+
   timer =
     null;
 
@@ -1155,6 +1745,7 @@ async function end(
     foutTimer
   );
 
+
   foutTimer =
     null;
 
@@ -1162,8 +1753,23 @@ async function end(
   antwoordGeblokkeerd =
     true;
 
+
+  const currentInput =
+    getCurrentInput();
+
+
+  if (
+    currentInput
+  ) {
+
+    currentInput.disabled =
+      true;
+  }
+
+
   ansEl.disabled =
     true;
+
 
   startBtn.disabled =
     true;
@@ -1183,7 +1789,7 @@ async function end(
 
   /*
     Alleen een volledig uitgespeelde ronde
-    kan leiden tot promotie of afronding.
+    van 2 minuten kan niveau omhoog opleveren.
   */
 
   const voldoetAanEisen =
@@ -1194,11 +1800,6 @@ async function end(
     percentage >= MIN_PERCENTAGE;
 
 
-  /*
-    Normale promotie:
-    leerling zit nog niet op het hoogste niveau.
-  */
-
   const promoted =
     voldoetAanEisen
     &&
@@ -1206,9 +1807,8 @@ async function end(
 
 
   /*
-    Hoogste niveau afgerond:
-    leerling stond al op niveau 12
-    en voldoet opnieuw aan 24 goed + 90%.
+    Niveau 13 is het hoogste Plus-niveau.
+    Intern is dat index 12.
   */
 
   const mastered =
@@ -1217,7 +1817,9 @@ async function end(
     oldLevel === LEVELS.length - 1;
 
 
-  if (promoted) {
+  if (
+    promoted
+  ) {
 
     levels.plus =
       oldLevel + 1;
@@ -1225,11 +1827,11 @@ async function end(
 
 
   /*
-    Alleen een VOLLEDIG uitgespeelde ronde
-    wordt naar Sheets gestuurd.
+    Alleen een normale volledige ronde
+    wordt in Sheets opgeslagen.
 
-    Een ronde die vanwege 4 fouten stopt,
-    wordt dus helemaal niet opgeslagen.
+    Bij 5 fouten achter elkaar:
+    niets opslaan.
   */
 
   if (
@@ -1262,6 +1864,7 @@ async function end(
         "Sheets: opslaan mislukt ⚠️";
     }
 
+
   } else {
 
     sheetStatusEl.textContent =
@@ -1282,6 +1885,7 @@ async function end(
       ` Ronde gestopt: ${MAX_FOUTEN_OP_RIJ} fouten achter elkaar. `
       + `Deze ronde is niet opgeslagen.`;
 
+
   } else if (
     mastered
   ) {
@@ -1289,12 +1893,14 @@ async function end(
     tekst +=
       " 🏆 Gefeliciteerd! Je hebt het hoogste niveau van Optellen behaald!";
 
+
   } else if (
     promoted
   ) {
 
     tekst +=
       " 🎉 Niveau omhoog!";
+
 
   } else if (
     good >= MIN_GOED
@@ -1305,6 +1911,7 @@ async function end(
     tekst +=
       ` Je was snel genoeg, maar voor niveau omhoog is minimaal ${MIN_PERCENTAGE}% goed nodig.`;
 
+
   } else if (
     good < MIN_GOED
     &&
@@ -1313,6 +1920,7 @@ async function end(
 
     tekst +=
       ` Je werkte nauwkeurig. Voor niveau omhoog zijn minimaal ${MIN_GOED} goede antwoorden nodig.`;
+
 
   } else {
 
@@ -1337,144 +1945,165 @@ async function end(
    ANTWOORD CONTROLEREN
 ========================================================= */
 
-ansEl.addEventListener(
-  "keydown",
-  e => {
+function handleKeyDown(
+  e
+) {
 
-    if (
-      e.key !== "Enter"
-      ||
-      !active
-      ||
-      antwoordGeblokkeerd
-      ||
-      ansEl.value === ""
-    ) {
+  if (
+    e.key !== "Enter"
+    ||
+    !active
+    ||
+    antwoordGeblokkeerd
+  ) {
 
-      return;
-    }
+    return;
+  }
 
 
-    tries++;
+  const input =
+    e.currentTarget;
 
 
-    triesEl.textContent =
+  if (
+    input.value === ""
+  ) {
+
+    return;
+  }
+
+
+  tries++;
+
+
+  triesEl.textContent =
+    String(
+      tries
+    );
+
+
+  const antwoord =
+    Number(
+      input.value
+    );
+
+
+  /* =======================================================
+     GOED
+  ======================================================= */
+
+  if (
+    antwoord === correct
+  ) {
+
+    good++;
+
+
+    foutenOpRij =
+      0;
+
+
+    goodEl.textContent =
       String(
-        tries
+        good
       );
-
-
-    const antwoord =
-      Number(
-        ansEl.value
-      );
-
-
-    /* =====================================================
-       GOED
-    ===================================================== */
-
-    if (
-      antwoord === correct
-    ) {
-
-      good++;
-
-
-      foutenOpRij =
-        0;
-
-
-      goodEl.textContent =
-        String(
-          good
-        );
-
-
-      fbEl.textContent =
-        "Goed!";
-
-
-      fbEl.className =
-        "feedback good";
-
-
-      newQ();
-
-
-      return;
-    }
-
-
-    /* =====================================================
-       FOUT
-    ===================================================== */
-
-    foutenOpRij++;
-
-
-    antwoordGeblokkeerd =
-      true;
-
-
-    ansEl.disabled =
-      true;
 
 
     fbEl.textContent =
-      `Helaas, het was ${correct}.`;
+      "Goed!";
 
 
     fbEl.className =
-      "feedback bad";
+      "feedback good";
 
 
-    /*
-      Na 5 fouten achter elkaar:
-      ronde stoppen.
-    */
-
-    if (
-      foutenOpRij >=
-      MAX_FOUTEN_OP_RIJ
-    ) {
-
-      foutTimer =
-        setTimeout(
-          () => {
-
-            end(
-              "teveel_fouten"
-            );
-
-          },
-          FOUT_WACHTTIJD_MS
-        );
+    newQ();
 
 
-      return;
-    }
+    return;
+  }
 
 
-    /*
-      Anders na 0,7 seconde verder.
-    */
+  /* =======================================================
+     FOUT
+  ======================================================= */
+
+  foutenOpRij++;
+
+
+  antwoordGeblokkeerd =
+    true;
+
+
+  input.disabled =
+    true;
+
+
+  fbEl.textContent =
+    `Helaas, het was ${correct}.`;
+
+
+  fbEl.className =
+    "feedback bad";
+
+
+  /*
+    Na 5 fouten achter elkaar stopt de ronde.
+  */
+
+  if (
+    foutenOpRij >=
+    MAX_FOUTEN_OP_RIJ
+  ) {
 
     foutTimer =
       setTimeout(
         () => {
 
-          if (!active) {
-            return;
-          }
-
-
-          newQ();
+          end(
+            "teveel_fouten"
+          );
 
         },
         FOUT_WACHTTIJD_MS
       );
+
+
+    return;
   }
+
+
+  /*
+    Anders na 0,7 seconde verder.
+  */
+
+  foutTimer =
+    setTimeout(
+      () => {
+
+        if (
+          !active
+        ) {
+
+          return;
+        }
+
+
+        newQ();
+
+      },
+      FOUT_WACHTTIJD_MS
+    );
+}
+
+
+/* =========================================================
+   NORMAAL INVULVAK
+========================================================= */
+
+ansEl.addEventListener(
+  "keydown",
+  handleKeyDown
 );
 
 
@@ -1489,7 +2118,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   LOKALE DATA LADEN
+   LOKALE DATA
 ========================================================= */
 
 (function initLocal() {
@@ -1505,10 +2134,27 @@ startBtn.addEventListener(
 
 
   levels = {
-    plus: Number(d.levels?.plus) || 0,
-    min: Number(d.levels?.min) || 0,
-    keer: Number(d.levels?.keer) || 0,
-    deel: Number(d.levels?.deel) || 0
+
+    plus:
+      Number(
+        d.levels?.plus
+      ) || 0,
+
+    min:
+      Number(
+        d.levels?.min
+      ) || 0,
+
+    keer:
+      Number(
+        d.levels?.keer
+      ) || 0,
+
+    deel:
+      Number(
+        d.levels?.deel
+      ) || 0
+
   };
 
 
@@ -1518,7 +2164,7 @@ startBtn.addEventListener(
 
 
 /* =========================================================
-   GOOGLE SHEETS LADEN
+   GOOGLE SHEETS
 ========================================================= */
 
 (async function initSheets() {
@@ -1556,10 +2202,27 @@ startBtn.addEventListener(
 
 
     levels = {
-      plus: Number(res.levels.plus) || 0,
-      min: Number(res.levels.min) || 0,
-      keer: Number(res.levels.keer) || 0,
-      deel: Number(res.levels.deel) || 0
+
+      plus:
+        Number(
+          res.levels.plus
+        ) || 0,
+
+      min:
+        Number(
+          res.levels.min
+        ) || 0,
+
+      keer:
+        Number(
+          res.levels.keer
+        ) || 0,
+
+      deel:
+        Number(
+          res.levels.deel
+        ) || 0
+
     };
 
 
@@ -1581,7 +2244,9 @@ startBtn.addEventListener(
     };
 
 
-    setLocalData(d);
+    setLocalData(
+      d
+    );
 
 
   } catch(e) {
