@@ -130,6 +130,7 @@
     </div>
 
     <div>
+
       <span
         class="pill"
         id="who"
@@ -143,6 +144,7 @@
       >
         Klas: —
       </span>
+
     </div>
 
   </div>
@@ -254,16 +256,12 @@
 
   <div class="sep"></div>
 
-
   <a
     class="link"
     href="index.html"
   >
     Andere leerling kiezen
   </a>
-
-
-  <div class="sep"></div>
 
 </div>
 
@@ -433,24 +431,25 @@ function jsonp(
         null;
 
 
-      const cleanup = () => {
+      const cleanup =
+        () => {
 
-        clearTimeout(
-          timeout
-        );
-
-
-        try {
-
-          delete window[
-            callbackName
-          ];
-
-        } catch(e) {}
+          clearTimeout(
+            timeout
+          );
 
 
-        script.remove();
-      };
+          try {
+
+            delete window[
+              callbackName
+            ];
+
+          } catch(e) {}
+
+
+          script.remove();
+        };
 
 
       window[
@@ -546,12 +545,14 @@ async function sheetsGet(
 
 
 /* =========================================================
-   OPTELLEN
+   OPTELLEN – 13 NIVEAUS
 ========================================================= */
 
 const PLUS_NAMES = [
 
-  "t/m 10",
+  "optellen t/m 10",
+
+  "splitsingen t/m 10",
 
   "stipsommen t/m 10",
 
@@ -579,7 +580,7 @@ const PLUS_NAMES = [
 
 
 /* =========================================================
-   AFTREKKEN
+   AFTREKKEN – 12 NIVEAUS
 ========================================================= */
 
 const MIN_NAMES = [
