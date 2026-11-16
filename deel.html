@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Keersommen – adaptief</title>
+  <title>Delen – adaptief</title>
 
   <style>
     body{
@@ -72,6 +72,12 @@
       font-size:3rem;
       margin:1rem 0;
       min-height:3rem;
+    }
+
+    .q small{
+      font-size:1.2rem;
+      color:#666;
+      font-weight:800;
     }
 
     input{
@@ -144,7 +150,7 @@
     </div>
   </div>
 
-  <h1>Keersommen</h1>
+  <h1>Delen</h1>
 
   <p class="sub">
     Niveau omhoog bij
@@ -404,16 +410,16 @@ async function sheetsGet(
 
 
 /* =========================================================
-   KEER-RONDE OPSLAAN
+   DEEL-RONDE OPSLAAN
 ========================================================= */
 
-async function sheetsFinishKeer(
+async function sheetsFinishDeel(
   klas,
   naam,
   code,
   promoted,
   mastered,
-  keerLevel
+  deelLevel
 ) {
 
   let url =
@@ -424,7 +430,7 @@ async function sheetsFinishKeer(
     + `&played=1`
     + `&promoted=${promoted ? 1 : 0}`
     + `&mastered=${mastered ? 1 : 0}`
-    + `&game=keer`;
+    + `&game=deel`;
 
 
   if (
@@ -432,7 +438,7 @@ async function sheetsFinishKeer(
   ) {
 
     url +=
-      `&keer=${encodeURIComponent(keerLevel)}`;
+      `&deel=${encodeURIComponent(deelLevel)}`;
   }
 
 
@@ -480,49 +486,51 @@ const SECONDS =
 /* =========================================================
    NIEUWE NIVEAUS
 
-   Eerst een tafel afzonderlijk.
-   Daarna mengen met alle eerder geoefende tafels.
+   Eerst één deeltafel afzonderlijk.
+   Daarna alle eerder geoefende deeltafels gemengd.
 ========================================================= */
 
 const LEVELS = [
 
-  "Tafel van 2",
+  "Deeltafel van 2",
 
-  "Tafel van 10",
+  "Deeltafel van 10",
 
-  "Mix: tafel van 2 en 10",
+  "Mix: deeltafel van 2 en 10",
 
-  "Tafel van 5",
+  "Deeltafel van 5",
 
-  "Mix: tafel van 2, 5 en 10",
+  "Mix: deeltafel van 2, 5 en 10",
 
-  "Tafel van 3",
+  "Deeltafel van 3",
 
-  "Mix: tafel van 2, 3, 5 en 10",
+  "Mix: deeltafel van 2, 3, 5 en 10",
 
-  "Tafel van 4",
+  "Deeltafel van 4",
 
-  "Mix: tafel van 2, 3, 4, 5 en 10",
+  "Mix: deeltafel van 2, 3, 4, 5 en 10",
 
-  "Tafel van 6",
+  "Deeltafel van 6",
 
-  "Mix: tafel van 2, 3, 4, 5, 6 en 10",
+  "Mix: deeltafel van 2, 3, 4, 5, 6 en 10",
 
-  "Tafel van 7",
+  "Deeltafel van 7",
 
-  "Mix: tafel van 2, 3, 4, 5, 6, 7 en 10",
+  "Mix: deeltafel van 2, 3, 4, 5, 6, 7 en 10",
 
-  "Tafel van 8",
+  "Deeltafel van 8",
 
-  "Mix: tafel van 2, 3, 4, 5, 6, 7, 8 en 10",
+  "Mix: deeltafel van 2, 3, 4, 5, 6, 7, 8 en 10",
 
-  "Tafel van 9",
+  "Deeltafel van 9",
 
-  "Alle tafels 2 t/m 10",
+  "Alle deeltafels 2 t/m 10",
 
-  "Stipsommen met alle tafels",
+  "Stipsommen met alle deeltafels",
 
-  "Grote keersommen"
+  "Grotere deelsommen",
+
+  "Delen t/m 100 – antwoord t/m 20"
 
 ];
 
@@ -646,7 +654,7 @@ function clampLevel(
 function getLevelIndex() {
 
   return clampLevel(
-    levels.keer
+    levels.deel
   );
 }
 
@@ -704,6 +712,299 @@ function pick(
 }
 
 
+/* =========================================================
+   DEELTAFELS PER NIVEAU
+========================================================= */
+
+function divisorsForLevel(
+  lvl
+) {
+
+  switch(
+    lvl
+  ) {
+
+    case 0:
+      return [2];
+
+    case 1:
+      return [10];
+
+    case 2:
+      return [2,10];
+
+    case 3:
+      return [5];
+
+    case 4:
+      return [2,5,10];
+
+    case 5:
+      return [3];
+
+    case 6:
+      return [2,3,5,10];
+
+    case 7:
+      return [4];
+
+    case 8:
+      return [2,3,4,5,10];
+
+    case 9:
+      return [6];
+
+    case 10:
+      return [2,3,4,5,6,10];
+
+    case 11:
+      return [7];
+
+    case 12:
+      return [2,3,4,5,6,7,10];
+
+    case 13:
+      return [8];
+
+    case 14:
+      return [2,3,4,5,6,7,8,10];
+
+    case 15:
+      return [9];
+
+    case 16:
+      return [2,3,4,5,6,7,8,9,10];
+
+    default:
+      return [2,3,4,5,6,7,8,9,10];
+  }
+}
+
+
+/* =========================================================
+   SOM MAKEN
+========================================================= */
+
+function makeQuestion() {
+
+  if (
+    !running
+  ) {
+
+    return;
+  }
+
+
+  const lvl =
+    getLevelIndex();
+
+
+  /* =======================================================
+     NIVEAU 18
+     STIPSOMMEN
+
+     Voorbeeld:
+     56 : ... = 8
+     antwoord = 7
+  ======================================================= */
+
+  if (
+    lvl === 17
+  ) {
+
+    const divisor =
+      pick(
+        [
+          2,3,4,5,6,7,8,9,10
+        ]
+      );
+
+
+    /*
+      Geen 0.
+      Uitkomst is 1 t/m 10.
+    */
+
+    const quotient =
+      r(
+        1,
+        10
+      );
+
+
+    const dividend =
+      divisor * quotient;
+
+
+    correctAnswer =
+      divisor;
+
+
+    qEl.textContent =
+      `${dividend} : … = ${quotient}`;
+
+
+    return;
+  }
+
+
+  /* =======================================================
+     NIVEAU 19
+     GROTERE DEELSOMMEN
+
+     Voorbeelden:
+     450 : 5
+     720 : 8
+     630 : 7
+  ======================================================= */
+
+  if (
+    lvl === 18
+  ) {
+
+    const divisor =
+      pick(
+        [
+          2,3,4,5,6,7,8,9,10
+        ]
+      );
+
+
+    const quotient =
+      pick(
+        [
+          10,20,30,40,50,
+          60,70,80,90
+        ]
+      );
+
+
+    const dividend =
+      divisor * quotient;
+
+
+    correctAnswer =
+      quotient;
+
+
+    qEl.textContent =
+      `${dividend} : ${divisor}`;
+
+
+    return;
+  }
+
+
+  /* =======================================================
+     NIVEAU 20
+     DELEN T/M 100
+     ANTWOORD T/M 20
+
+     Voorbeelden:
+     84 : 7
+     96 : 8
+     100 : 5
+  ======================================================= */
+
+  if (
+    lvl === 19
+  ) {
+
+    let divisor;
+    let quotient;
+    let dividend;
+
+
+    do {
+
+      divisor =
+        pick(
+          [
+            2,3,4,5,6,7,8,9,10
+          ]
+        );
+
+
+      /*
+        Geen 0.
+        Antwoord maximaal 20.
+      */
+
+      quotient =
+        r(
+          1,
+          20
+        );
+
+
+      dividend =
+        divisor * quotient;
+
+
+    } while (
+      dividend > 100
+    );
+
+
+    correctAnswer =
+      quotient;
+
+
+    qEl.textContent =
+      `${dividend} : ${divisor}`;
+
+
+    return;
+  }
+
+
+  /* =======================================================
+     NIVEAU 1 T/M 17
+
+     Gewone deeltafels.
+  ======================================================= */
+
+  const divisors =
+    divisorsForLevel(
+      lvl
+    );
+
+
+  const divisor =
+    pick(
+      divisors
+    );
+
+
+  /*
+    Geen 0.
+    Uitkomst altijd 1 t/m 10.
+  */
+
+  const quotient =
+    r(
+      1,
+      10
+    );
+
+
+  const dividend =
+    divisor * quotient;
+
+
+  correctAnswer =
+    quotient;
+
+
+  qEl.textContent =
+    `${dividend} : ${divisor}`;
+}
+
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
 function setFeedback(
   text,
   ok
@@ -734,322 +1035,10 @@ function clearFeedback() {
 
 
 /* =========================================================
-   TAFELS PER NIVEAU
-========================================================= */
-
-function tablesForLevel(
-  lvl
-) {
-
-  switch(
-    lvl
-  ) {
-
-    /* tafel 2 */
-    case 0:
-      return [2];
-
-
-    /* tafel 10 */
-    case 1:
-      return [10];
-
-
-    /* mix 2 en 10 */
-    case 2:
-      return [2,10];
-
-
-    /* tafel 5 */
-    case 3:
-      return [5];
-
-
-    /* mix 2,5,10 */
-    case 4:
-      return [2,5,10];
-
-
-    /* tafel 3 */
-    case 5:
-      return [3];
-
-
-    /* mix 2,3,5,10 */
-    case 6:
-      return [2,3,5,10];
-
-
-    /* tafel 4 */
-    case 7:
-      return [4];
-
-
-    /* mix 2,3,4,5,10 */
-    case 8:
-      return [2,3,4,5,10];
-
-
-    /* tafel 6 */
-    case 9:
-      return [6];
-
-
-    /* mix t/m 6 */
-    case 10:
-      return [2,3,4,5,6,10];
-
-
-    /* tafel 7 */
-    case 11:
-      return [7];
-
-
-    /* mix t/m 7 */
-    case 12:
-      return [2,3,4,5,6,7,10];
-
-
-    /* tafel 8 */
-    case 13:
-      return [8];
-
-
-    /* mix t/m 8 */
-    case 14:
-      return [2,3,4,5,6,7,8,10];
-
-
-    /* tafel 9 */
-    case 15:
-      return [9];
-
-
-    /* alle tafels */
-    case 16:
-      return [2,3,4,5,6,7,8,9,10];
-
-
-    default:
-      return [2,3,4,5,6,7,8,9,10];
-  }
-}
-
-
-/* =========================================================
-   SOM MAKEN
-========================================================= */
-
-function makeQuestion() {
-
-  if (
-    !running
-  ) {
-
-    return;
-  }
-
-
-  const lvl =
-    getLevelIndex();
-
-
-  /* =======================================================
-     NIVEAU 18
-     STIPSOMMEN MET ALLE TAFELS
-  ======================================================= */
-
-  if (
-    lvl === 17
-  ) {
-
-    const tafel =
-      pick(
-        [
-          2,3,4,5,6,7,8,9,10
-        ]
-      );
-
-
-    /*
-      Geen 0.
-      Alleen 1 t/m 10.
-    */
-
-    const factor =
-      r(
-        1,
-        10
-      );
-
-
-    correctAnswer =
-      factor;
-
-
-    qEl.textContent =
-      `${tafel} × … = ${tafel * factor}`;
-
-
-    return;
-  }
-
-
-  /* =======================================================
-     NIVEAU 19
-     GROTE KEERSOMMEN
-  ======================================================= */
-
-  if (
-    lvl === 18
-  ) {
-
-    const type =
-      pick(
-        [
-          "tiental",
-          "honderdtal",
-          "tientalxtiental"
-        ]
-      );
-
-
-    if (
-      type === "tiental"
-    ) {
-
-      const a =
-        pick(
-          [
-            10,20,30,40,50,
-            60,70,80,90
-          ]
-        );
-
-
-      const b =
-        r(
-          2,
-          9
-        );
-
-
-      correctAnswer =
-        a * b;
-
-
-      qEl.textContent =
-        `${a} × ${b}`;
-
-
-      return;
-    }
-
-
-    if (
-      type === "honderdtal"
-    ) {
-
-      const a =
-        pick(
-          [
-            100,200,300,400,500,
-            600,700,800,900
-          ]
-        );
-
-
-      const b =
-        r(
-          2,
-          9
-        );
-
-
-      correctAnswer =
-        a * b;
-
-
-      qEl.textContent =
-        `${a} × ${b}`;
-
-
-      return;
-    }
-
-
-    const a =
-      pick(
-        [
-          10,20,30,40,50,
-          60,70,80,90
-        ]
-      );
-
-
-    const b =
-      pick(
-        [
-          10,20,30,40,50,
-          60,70,80,90
-        ]
-      );
-
-
-    correctAnswer =
-      a * b;
-
-
-    qEl.textContent =
-      `${a} × ${b}`;
-
-
-    return;
-  }
-
-
-  /* =======================================================
-     NIVEAU 1 T/M 17
-  ======================================================= */
-
-  const tables =
-    tablesForLevel(
-      lvl
-    );
-
-
-  const tafel =
-    pick(
-      tables
-    );
-
-
-  /*
-    Geen tafel × 0.
-    Alleen 1 t/m 10.
-  */
-
-  const getal =
-    r(
-      1,
-      10
-    );
-
-
-  correctAnswer =
-    getal * tafel;
-
-
-  qEl.textContent =
-    `${getal} × ${tafel}`;
-}
-
-
-/* =========================================================
    LOKAAL OPSLAAN
 ========================================================= */
 
-function saveLocalKeerLevel() {
+function saveLocalDeelLevel() {
 
   const d =
     getLocalData();
@@ -1064,8 +1053,8 @@ function saveLocalKeerLevel() {
     };
 
 
-  d.levels.keer =
-    levels.keer;
+  d.levels.deel =
+    levels.deel;
 
 
   setLocalData(
@@ -1087,7 +1076,7 @@ async function saveFinishedRound(
     promoted
   ) {
 
-    saveLocalKeerLevel();
+    saveLocalDeelLevel();
   }
 
 
@@ -1095,13 +1084,13 @@ async function saveFinishedRound(
     sheetsOk
   ) {
 
-    await sheetsFinishKeer(
+    await sheetsFinishDeel(
       studentClass,
       studentId,
       studentCode,
       promoted,
       mastered,
-      levels.keer
+      levels.deel
     );
   }
 }
@@ -1279,8 +1268,8 @@ async function endRun(
 
 
   /*
-    Alleen een volledige ronde van 2 minuten
-    kan een niveau omhoog geven.
+    Alleen een volledige ronde van twee minuten
+    kan tot niveau omhoog leiden.
   */
 
   const voldoetAanEisen =
@@ -1298,8 +1287,8 @@ async function endRun(
 
 
   /*
-    Hoogste niveau is nu niveau 19.
-    Intern is dat index 18.
+    Hoogste niveau is niveau 20.
+    Intern is dat index 19.
   */
 
   const mastered =
@@ -1312,14 +1301,14 @@ async function endRun(
     promoted
   ) {
 
-    levels.keer =
+    levels.deel =
       oldLevel + 1;
   }
 
 
   /*
-    Alleen een volledige ronde opslaan.
-    Na 5 fouten achter elkaar wordt niets opgeslagen.
+    Alleen een volledig uitgespeelde ronde opslaan.
+    Bij 5 fouten achter elkaar wordt niets opgeslagen.
   */
 
   if (
@@ -1377,7 +1366,7 @@ async function endRun(
   ) {
 
     tekst +=
-      " 🏆 Gefeliciteerd! Je hebt het hoogste niveau van Keersommen behaald!";
+      " 🏆 Gefeliciteerd! Je hebt het hoogste niveau van Delen behaald!";
 
   } else if (
     promoted
